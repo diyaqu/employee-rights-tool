@@ -324,13 +324,16 @@ function syncR3(){
 // ---------- statute of limitations ----------
 // returns {days, label, agency}
 function deadlineDays(){
-  const ev=new Date(S.evdate);
+  // parse YYYY-MM-DD as LOCAL midnight (avoid new Date('...') UTC shift)
+  const p=S.evdate.split('-');
+  const ev=new Date(+p[0], +p[1]-1, +p[2]);
   // discrimination/retaliation via EEOC: 300 days in states w/ FEP agency (CA,NY,NJ,WA), else 180
   const fep = ['CA','NY','NJ','WA'].includes(S.state);
   const limit = fep ? 300 : 180;
-  const ddl=new Date(ev); ddl.setDate(ddl.getDate()+limit);
+  // add days via millisecond arithmetic, then normalize to local midnight
+  const ddl=new Date(ev.getTime()+limit*86400000); ddl.setHours(0,0,0,0);
   const today=new Date(); today.setHours(0,0,0,0);
-  const days=Math.ceil((ddl-today)/86400000);
+  const days=Math.round((ddl-today)/86400000);
   return {days, limit, fep, ddl};
 }
 function fmtDate(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
