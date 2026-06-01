@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>在美被雇主亏待了？60 秒理清你的处境</title>
-<meta name="description" content="一个免费的小工具，帮在美华人员工判断自己的处境、知道该立刻做什么、找到肯免费咨询的律师。不收集任何个人信息。" />
+<title>在美被雇主亏待了？一个免费的自助小工具</title>
+<meta name="description" content="一个免费的资源小工具，帮在美华人员工弄清自己的处境、知道现在能做什么、找到肯免费咨询的靠谱律师。不收集任何个人信息，全部基于官方公开来源。" />
 <style>
   :root{
     --bg:#f6f7f5; --card:#ffffff; --ink:#1c1d1a; --muted:#6b6f68;
     --line:#e6e8e3; --accent:#2f6f57; --accent-soft:#e8f1ec;
-    --warn:#9a5b00; --warn-soft:#fbf1df; --danger:#a13b2f;
+    --warn:#9a5b00; --warn-soft:#fbf1df; --danger:#a13b2f; --danger-soft:#fbeae6;
     --radius:16px; --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.05);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -17,14 +17,17 @@
   body{
     background:var(--bg); color:var(--ink);
     font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
-    line-height:1.65; font-size:17px;
+    line-height:1.66; font-size:17px;
     padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
-  .wrap{max-width:560px;margin:0 auto;padding:20px 18px 64px}
-  .brand{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:14px}
+  .wrap{max-width:560px;margin:0 auto;padding:18px 18px 64px}
+  .brand{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:6px}
   .brand b{color:var(--ink);font-weight:600}
+  .nolawyer{font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 11px;margin-bottom:14px;line-height:1.5}
+  .nolawyer b{color:var(--ink)}
   h1{font-size:25px;line-height:1.35;margin:0 0 10px;letter-spacing:-.01em}
   h2{font-size:20px;margin:0 0 12px;letter-spacing:-.01em}
+  h3{font-size:16px;margin:18px 0 8px;letter-spacing:-.01em}
   p{margin:0 0 14px}
   .lede{color:var(--muted);font-size:15.5px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 18px;box-shadow:var(--shadow);margin-bottom:16px}
@@ -39,17 +42,17 @@
   .opt:hover{border-color:#cdd3cc}
   .opt:active{transform:scale(.99)}
   .opt.sel{border-color:var(--accent);background:var(--accent-soft)}
-  .opt .t{font-weight:600}
+  .opt .t{font-weight:600;display:block}
   .opt .d{display:block;color:var(--muted);font-size:13.5px;margin-top:2px}
+  .opt .ic{font-size:18px;margin-right:6px}
   .check{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border:1.5px solid var(--line);
     border-radius:12px;margin-bottom:9px;cursor:pointer;background:#fbfbfa;transition:.15s}
   .check.sel{border-color:var(--accent);background:var(--accent-soft)}
   .check input{margin-top:4px;width:18px;height:18px;accent-color:var(--accent);flex:none}
   .check span{font-size:15.5px;line-height:1.5}
-  input[type=date],input[type=number]{font:inherit;width:100%;padding:12px 13px;border:1.5px solid var(--line);
+  input[type=date]{font:inherit;width:100%;padding:12px 13px;border:1.5px solid var(--line);
     border-radius:12px;background:#fbfbfa;color:var(--ink)}
-  .row{display:flex;gap:10px}
-  .row>*{flex:1}
+  select{font:inherit;width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:12px;background:#fbfbfa;color:var(--ink)}
   label.fld{display:block;font-size:13.5px;color:var(--muted);margin:0 0 6px}
   .btn{appearance:none;border:none;background:var(--accent);color:#fff;font:inherit;font-weight:600;
     font-size:16px;padding:14px 18px;border-radius:13px;cursor:pointer;width:100%;transition:.15s}
@@ -57,69 +60,73 @@
   .btn:active:not(:disabled){transform:scale(.99)}
   .btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--line)}
   .btn.sm{width:auto;padding:10px 16px;font-size:14.5px}
-  .btnrow{display:flex;gap:10px;margin-top:6px}
-  .btnrow .btn{width:auto;flex:1}
   .back{background:none;border:none;color:var(--muted);font:inherit;font-size:14px;padding:6px 0;cursor:pointer;margin-bottom:8px}
   .pill{display:inline-block;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;margin-bottom:12px}
   .pill.good{background:var(--accent-soft);color:var(--accent)}
   .pill.warn{background:var(--warn-soft);color:var(--warn)}
   .pill.null{background:#eef0ed;color:var(--muted)}
-  .countdown{font-size:34px;font-weight:700;color:var(--accent);letter-spacing:-.02em;line-height:1.1}
+  .countdown{font-size:32px;font-weight:700;color:var(--accent);letter-spacing:-.02em;line-height:1.12}
   .countdown.danger{color:var(--danger)}
-  .countdown small{font-size:15px;font-weight:500;color:var(--muted);display:block;margin-top:2px}
-  .actionlist{counter-reset:a;padding:0;margin:0;list-style:none}
-  .actionlist li{counter-increment:a;position:relative;padding:0 0 16px 40px;margin:0}
-  .actionlist li::before{content:counter(a);position:absolute;left:0;top:0;width:28px;height:28px;
+  .countdown small{font-size:14.5px;font-weight:500;color:var(--muted);display:block;margin-top:3px;line-height:1.5}
+  .steps{counter-reset:a;padding:0;margin:0;list-style:none}
+  .steps li{counter-increment:a;position:relative;padding:0 0 15px 38px;margin:0}
+  .steps li::before{content:counter(a);position:absolute;left:0;top:1px;width:26px;height:26px;
     background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;
-    font-size:14px;font-weight:700}
-  .actionlist li b{display:block;margin-bottom:2px}
-  .actionlist li .d{color:var(--muted);font-size:14.5px}
+    font-size:13px;font-weight:700}
+  .steps li b{display:block;margin-bottom:2px}
+  .steps li .d{color:var(--muted);font-size:14.5px}
   .callout{background:var(--warn-soft);border:1px solid #f0e2c4;border-radius:13px;padding:14px 15px;margin:14px 0;font-size:15px}
   .callout b{color:var(--warn)}
-  .magic{background:var(--accent-soft);border:1px solid #cfe3d8;border-radius:13px;padding:14px 15px;margin:12px 0}
-  .magic code{background:#fff;padding:2px 7px;border-radius:6px;font-size:14px;border:1px solid var(--line)}
+  .callout.red{background:var(--danger-soft);border-color:#f0cfc7}
+  .callout.red b{color:var(--danger)}
+  .magic{background:var(--accent-soft);border:1px solid #cfe3d8;border-radius:13px;padding:14px 15px;margin:12px 0;font-size:15px}
+  .magic code{background:#fff;padding:2px 7px;border-radius:6px;font-size:13.5px;border:1px solid var(--line);white-space:nowrap}
   .ref{background:#fbfbfa;border:1px solid var(--line);border-radius:13px;padding:16px;margin-top:16px;text-align:center}
   .ref .wx{font-size:20px;font-weight:700;letter-spacing:.02em;margin:6px 0}
+  .src{font-size:12.5px;color:var(--muted);line-height:1.7;margin-top:6px}
+  .src a{word-break:break-all}
   .disc{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
   .progress{height:4px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:18px}
   .progress i{display:block;height:100%;background:var(--accent);width:0;transition:.3s}
   a{color:var(--accent)}
-  .tag{font-size:12px;color:var(--muted)}
+  .tag{font-size:12.5px;color:var(--muted)}
   hr.soft{border:none;border-top:1px solid var(--line);margin:18px 0}
+  .lawline{border-left:3px solid var(--accent-soft);padding-left:13px;margin:12px 0}
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <div class="brand">🌿 <b>屈迪雅 · 美国用工现场</b> &nbsp;|&nbsp; 免费小工具 · 不收集任何信息</div>
+  <div class="nolawyer">💛 先说清楚：<b>我不是律师</b>，下面所有内容都是<b>公开的法律知识和官方渠道整理</b>（每条都附了出处），是帮你心里有底、知道下一步去哪，<b>不是针对你个人的法律意见</b>。真要打官司、做重要决定，还是得找律师——我可以免费帮你转介。</div>
 
   <!-- ===== INTRO ===== -->
   <div class="step active" id="s-intro">
     <div class="card">
-      <h1>在美国，被雇主亏待了？<br>先花 60 秒理清你的处境。</h1>
-      <p class="lede">很多在美华人遇到过：钱没给对、被穿小鞋、离职后福利卡住……
-      想找律师又怕花钱、怕麻烦、甚至不确定"这到底算不算事"。</p>
-      <p class="lede">这个小工具帮你三件事：<b>① 看清你属于哪种情况 ② 知道现在马上该做什么
-      ③ 找到肯免费咨询的靠谱律师</b>（我可以免费帮你转介，不收你也不收律师任何费用）。</p>
-      <div class="callout">🔒 <b>完全匿名。</b>不用注册、不用登录，你填的任何东西都<b>只留在你自己手机上</b>，我看不到、也不会上传。</div>
+      <h1>在美国，被雇主亏待了？<br>先别慌，我陪你理一理。</h1>
+      <p class="lede">钱没给对、被穿小鞋、离职后福利卡住、被开除还被塞一份合同让你赶紧签……
+      很多在美华人都遇到过，又常常不知道：这算不算事？能不能维权？找律师是不是很贵很麻烦？</p>
+      <p class="lede">这个小工具帮你三件事：<b>① 弄清你这种情况法律上是怎么回事 ② 现在自己就能先做哪几步
+      ③ 去哪找肯免费咨询的靠谱律师</b>（我可以免费帮你对接，不收你也不收律师任何钱）。</p>
+      <div class="callout">🔒 <b>完全匿名。</b>不用注册、不用登录，你填的任何东西都<b>只留在你自己手机上</b>，我看不到、也不会上传到任何地方。</div>
       <button class="btn" onclick="go('s-entry')">开始 →</button>
     </div>
-    <p class="disc">⚖️ 本工具只提供一般信息和方向指引，<b>不构成法律意见</b>，也不能替代律师。每个案子都不一样，重要决定请咨询执业律师。</p>
+    <p class="disc">⚖️ 本工具只提供一般法律信息和方向指引，全部基于官方公开来源，<b>不构成法律意见</b>，也不能替代律师，使用本工具不会和我建立任何律师-委托关系。每个人的情况都不一样，重要决定请咨询执业律师。</p>
   </div>
 
   <!-- ===== ENTRY ROUTING ===== -->
   <div class="step" id="s-entry">
+    <button class="back" onclick="go('s-intro')">← 返回</button>
     <div class="card">
-      <div class="progress"><i style="width:20%"></i></div>
       <p class="q">你遇到的，主要是哪一种？</p>
-      <p class="sub">选最接近的那一个就行。说大白话，不用懂法律。</p>
-      <button class="opt" onclick="route('retal')"><span class="t">我提了问题 / 投诉 / 请假之后，就被穿小鞋了</span><span class="d">比如：提完加班费两周后被调岗、投诉后被排差班、请假后绩效突然变差</span></button>
-      <button class="opt" onclick="route('admin')"><span class="t">离职后，钱或福利卡住了，没人告诉我怎么办</span><span class="d">比如：最后一份工资、押在账户里的钱、报销、401k、commuter / FSA 余额</span></button>
-      <button class="opt" onclick="route('other')"><span class="t">钱没给对（加班费 / 最低工资 / 克扣）</span></button>
-      <button class="opt" onclick="route('other')"><span class="t">因为我是谁被区别对待（族裔/国籍/性别/怀孕/年龄/残疾/口音）</span></button>
-      <button class="opt" onclick="route('other')"><span class="t">被性骚扰 / 工作环境让我待不下去</span></button>
-      <button class="opt" onclick="route('other')"><span class="t">被拿身份、签证、I-9 威胁（H1B / 绿卡 / E-Verify）</span></button>
-      <button class="opt" onclick="route('other')"><span class="t">被开除了，我觉得不公平</span></button>
+      <p class="sub">选最接近的那一个就行。说大白话，不用懂法律。点进去有具体能做的事。</p>
+      <button class="opt" onclick="go('s-r1')"><span class="t"><span class="ic">🎯</span>我提了问题 / 投诉 / 请假之后，就被穿小鞋了</span><span class="d">提完加班费两周后被调岗、投诉后被排差班、请假后绩效突然变差 → 报复 Retaliation</span></button>
+      <button class="opt" onclick="openCat('wage')"><span class="t"><span class="ic">💵</span>钱没给对：加班费 / 最低工资 / 小费 / off-the-clock</span><span class="d">这一类最好维权，几乎不看公司大小</span></button>
+      <button class="opt" onclick="openCat('discrim')"><span class="t"><span class="ic">⚖️</span>因为我是谁被区别对待</span><span class="d">族裔 / 国籍 / 性别 / 怀孕 / 年龄 / 残疾 / 宗教 → 歧视</span></button>
+      <button class="opt" onclick="openCat('harass')"><span class="t"><span class="ic">🛑</span>被性骚扰 / 工作环境让我待不下去</span><span class="d">骚扰 / 敌意工作环境</span></button>
+      <button class="opt" onclick="openCat('immig')"><span class="t"><span class="ic">🛂</span>被拿身份、签证、I-9 威胁</span><span class="d">H1B / 绿卡 / E-Verify / 查身份 → 有专门免费保护你的机构</span></button>
+      <button class="opt" onclick="openCat('term')"><span class="t"><span class="ic">📄</span>被开除了 / 收到一份 severance 让我签</span><span class="d">⚠️ 先别急着签！点进来看为什么</span></button>
+      <button class="opt" onclick="go('s-admin')"><span class="t"><span class="ic">🧾</span>离职后钱或福利卡住了，没人管</span><span class="d">最后一份工资、押在账户里的钱、报销、401k、commuter / FSA 余额</span></button>
     </div>
   </div>
 
@@ -127,7 +134,7 @@
   <div class="step" id="s-r1">
     <button class="back" onclick="go('s-entry')">← 返回</button>
     <div class="card">
-      <div class="progress"><i style="width:40%"></i></div>
+      <div class="progress"><i style="width:33%"></i></div>
       <p class="q">被穿小鞋<u>之前</u>，你做过下面哪件事吗？</p>
       <p class="sub">这是最关键的一步。美国法律里，一旦你做了这些"受保护的行为"，雇主之后对你的动作就会被时间线盯着——
       <b>哪怕只是私下跟上级说一句"我觉得加班费没算对"，保护就已经开始了。</b>可多选。</p>
@@ -142,9 +149,9 @@
     <div class="card">
       <div class="progress"><i style="width:55%"></i></div>
       <p class="q">那件事，和你"被穿小鞋"之间，大概隔了多久？</p>
-      <p class="sub">时间越近，法律上越能说明两件事有关联（这叫 temporal proximity，是报复案里很重要的证据）。</p>
-      <button class="opt" onclick="setProx('close','s-r3')"><span class="t">几天到几周内</span><span class="d">关联性很强</span></button>
-      <button class="opt" onclick="setProx('mid','s-r3')"><span class="t">一两个月内</span><span class="d">仍有关联</span></button>
+      <p class="sub">时间越近，越能说明两件事有关联（法律上叫 temporal proximity，是报复类案子里很重要的一种证据）。</p>
+      <button class="opt" onclick="setProx('close','s-r3')"><span class="t">几天到几周内</span><span class="d">关联性通常很强</span></button>
+      <button class="opt" onclick="setProx('mid','s-r3')"><span class="t">一两个月内</span><span class="d">通常仍有关联</span></button>
       <button class="opt" onclick="setProx('far','s-r3')"><span class="t">几个月以上 / 记不清了</span><span class="d">关联性较弱，但不代表没用</span></button>
     </div>
   </div>
@@ -153,11 +160,11 @@
   <div class="step" id="s-r3">
     <button class="back" onclick="go('s-r2')">← 返回</button>
     <div class="card">
-      <div class="progress"><i style="width:70%"></i></div>
+      <div class="progress"><i style="width:77%"></i></div>
       <p class="q">关于这家公司</p>
-      <p class="sub">公司在哪个州、有多少人，决定了哪部法律能保护你——这一步很多人会忽略，但很重要。</p>
+      <p class="sub">公司在哪个州、有多少人，决定了哪部法律能用上——这一步很多人会忽略，但很重要。</p>
       <label class="fld">公司所在的州</label>
-      <select id="state" onchange="syncR3()" style="font:inherit;width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:12px;background:#fbfbfa;color:var(--ink);margin-bottom:14px">
+      <select id="state" onchange="syncR3()" style="margin-bottom:14px">
         <option value="">请选择…</option>
         <option value="CA">加州 California</option>
         <option value="NY">纽约州 New York</option>
@@ -167,11 +174,11 @@
         <option value="OTHER">其他 / 不确定</option>
       </select>
       <p class="q" style="font-size:16px">公司大概有多少员工？</p>
-      <button class="opt" onclick="setSize('1','syncR3')" data-sz><span class="t">1–4 人</span></button>
-      <button class="opt" onclick="setSize('5','syncR3')" data-sz><span class="t">5–14 人</span></button>
-      <button class="opt" onclick="setSize('15','syncR3')" data-sz><span class="t">15–49 人</span></button>
-      <button class="opt" onclick="setSize('50','syncR3')" data-sz><span class="t">50 人以上</span></button>
-      <button class="opt" onclick="setSize('?','syncR3')" data-sz><span class="t">不确定</span></button>
+      <button class="opt" data-sz onclick="setSize('1')"><span class="t">1–4 人</span></button>
+      <button class="opt" data-sz onclick="setSize('5')"><span class="t">5–14 人</span></button>
+      <button class="opt" data-sz onclick="setSize('15')"><span class="t">15–49 人</span></button>
+      <button class="opt" data-sz onclick="setSize('50')"><span class="t">50 人以上</span></button>
+      <button class="opt" data-sz onclick="setSize('?')"><span class="t">不确定</span></button>
       <button class="btn" id="r3btn" disabled onclick="go('s-r4')" style="margin-top:6px">下一步 →</button>
     </div>
   </div>
@@ -180,54 +187,40 @@
   <div class="step" id="s-r4">
     <button class="back" onclick="go('s-r3')">← 返回</button>
     <div class="card">
-      <div class="progress"><i style="width:85%"></i></div>
+      <div class="progress"><i style="width:92%"></i></div>
       <p class="q">最近一次"被穿小鞋"大概是哪天？</p>
-      <p class="sub">很多维权途径有<b>截止日期</b>，按天算、过期不候。填个大概日期，我帮你算还剩多少时间。</p>
+      <p class="sub">很多维权途径有<b>截止日期</b>，按天算、过期不候。填个大概日期，我帮你把时间窗口算出来。</p>
       <label class="fld">日期（不记得具体哪天，选当月 1 号也行）</label>
       <input type="date" id="evdate" onchange="document.getElementById('r4btn').disabled=!this.value" />
-      <button class="btn" id="r4btn" disabled onclick="buildRetalResult()" style="margin-top:16px">看我的结果 →</button>
+      <button class="btn" id="r4btn" disabled onclick="buildRetalResult()" style="margin-top:16px">看整理结果 →</button>
     </div>
   </div>
 
   <!-- ===== RETALIATION RESULT ===== -->
   <div class="step" id="s-rresult">
-    <div class="card" id="rresultcard"><!-- filled by JS --></div>
-    <div class="card" id="rcountcard"><!-- countdown --></div>
+    <button class="back" onclick="go('s-r4')">← 返回</button>
+    <div class="card" id="rresultcard"></div>
+    <div class="card" id="rcountcard"></div>
     <div class="card">
-      <h2>现在马上做这 3 件事</h2>
-      <ul class="actionlist">
-        <li><b>今天就固定证据</b><span class="d">把相关邮件、短信、微信、工资单、排班表、绩效记录<b>截图，转存到你自己的私人邮箱或云盘</b>——别只留在公司电脑/邮箱里，那些可能随时被收回。</span></li>
-        <li><b>写一份时间线</b><span class="d">日期 + 发生了什么 + 谁在场。报复类案子，吃的就是这条时间线。👇 我做了个模板，点一下就能下载。</span>
+      <h2>现在自己就能做的 3 件事</h2>
+      <ul class="steps">
+        <li><b>今天就把证据存下来</b><span class="d">相关的邮件、短信、微信、工资单、排班表、绩效记录，<b>截图转存到你自己的私人邮箱或云盘</b>——别只留在公司电脑/邮箱里，那些可能随时被收回。</span></li>
+        <li><b>写一份时间线</b><span class="d">日期 + 发生了什么 + 谁在场。报复类的事，吃的就是这条时间线。👇 做了个模板，点一下就能下载。</span>
           <button class="btn ghost sm" style="margin-top:8px" onclick="downloadTimeline()">⬇️ 下载时间线模板</button></li>
-        <li><b>在截止日期前找人聊一次</b><span class="d">不用马上打官司——先找一个<b>肯免费听你讲完整件事</b>的律师/机构确认方向。见下方。</span></li>
+        <li><b>在截止日期前，找人免费聊一次</b><span class="d">不用马上打官司——先找一个<b>肯免费听你讲完整件事</b>的律师或机构，帮你判断方向。渠道见下面。</span></li>
       </ul>
     </div>
-    <div class="card">
-      <h2>去哪找帮助（都免费 / 低成本）</h2>
-      <div class="callout">💡 <b>"我没预算找律师"——这句话很可能是误会。</b>
-      工资、歧视、报复这类案子，<b>很多律师是「胜诉才收费」(contingency)，或第一次咨询免费</b>。
-      重点不是钱，是<b>找到一个肯耐心听你讲完整件事的靠谱律师</b>。</div>
-      <p>• <b>EEOC（联邦平等就业机会委员会）</b>：歧视/报复可以自己免费在线投诉 → <a href="https://www.eeoc.gov/filing-charge-discrimination" target="_blank" rel="noopener">eeoc.gov</a></p>
-      <p>• <b>州劳工局 / 公平就业机构</b>：如加州 CRD、纽约州 DOL，本州投诉时效通常更长。</p>
-      <p>• <b>Legal Aid 法律援助</b>：收入符合条件的可免费。</p>
-      <div class="ref">
-        <p style="margin:0 0 4px"><b>想让我免费帮你转介靠谱律师？</b></p>
-        <p class="tag" style="margin:0">我不是律师，也不从中收任何钱——纯帮忙。加我，把情况说一句，我帮你对接。</p>
-        <div class="wx">微信：DQ9921</div>
-        <p class="tag" style="margin:0">或小红书私信 <b>@Diya美国用工现场</b></p>
-      </div>
-    </div>
+    <div class="card" id="lawyer-help"></div>
     <button class="btn ghost" onclick="location.reload()">↺ 重新开始 / 帮朋友测一次</button>
-    <p class="disc">⚖️ 以上为一般信息与方向指引，<b>不构成法律意见</b>，也不替代律师。法律因州而异、因案而异，重要决定请咨询执业律师。截止日期为常见情形的估算，<b>请以律师/官方机构确认为准</b>。</p>
+    <p class="disc" id="disc-retal"></p>
   </div>
 
   <!-- ===== ADMIN / BENEFITS STUCK ===== -->
   <div class="step" id="s-admin">
     <button class="back" onclick="go('s-entry')">← 返回</button>
     <div class="card">
-      <div class="progress"><i style="width:60%"></i></div>
       <h2>离职后钱/福利卡住——多数能要回来</h2>
-      <p class="lede">这种情况往往<b>不用打官司</b>，卡住的原因常常只是：你没用对"行话"，或者没找对人。下面是通用打法。</p>
+      <p class="lede">这种情况往往<b>不用打官司</b>，卡住的原因常常只是：没用对"行话"，或者没找对人。下面是通用打法。</p>
       <p class="q" style="font-size:16px;margin-top:8px">你卡在哪一类？</p>
       <button class="opt" onclick="adminPick('wage')"><span class="t">最后一份工资 / 加班费没拿到</span></button>
       <button class="opt" onclick="adminPick('account')"><span class="t">押在账户里的钱（commuter / FSA / HSA 余额）</span></button>
@@ -237,42 +230,49 @@
     </div>
   </div>
 
-  <!-- ===== OTHER (not yet built) ===== -->
-  <div class="step" id="s-other">
+  <!-- ===== GENERIC CONTENT PAGE ===== -->
+  <div class="step" id="s-content">
     <button class="back" onclick="go('s-entry')">← 返回</button>
-    <div class="card">
-      <h2>这一类，我想先亲自帮你</h2>
-      <p class="lede">这个小工具还在一块块搭。你选的这类情况，比起让你点几个按钮，<b>我更想直接听你讲一句具体发生了什么</b>——这样我能给你更准的方向，也可能帮你免费转介律师。</p>
-      <div class="callout">💡 顺带说一句很多人不知道的事：工资、歧视、报复这类案子，<b>很多律师胜诉才收费，或第一次咨询免费</b>。"没预算"常常是误会。</div>
-      <div class="ref">
-        <p style="margin:0 0 4px"><b>加我，说一句你的情况</b></p>
-        <p class="tag" style="margin:0">我不是律师，不收你也不收律师任何费用，纯帮忙。</p>
-        <div class="wx">微信：DQ9921</div>
-        <p class="tag" style="margin:0">或小红书私信 <b>@Diya美国用工现场</b></p>
-      </div>
-    </div>
-    <p class="disc">⚖️ 本工具提供一般信息，不构成法律意见。</p>
+    <div class="card" id="contentcard"></div>
+    <div class="card" id="content-lawyer"></div>
+    <button class="btn ghost" onclick="location.reload()">↺ 回到开头 / 换一个问题</button>
+    <p class="disc" id="disc-content"></p>
   </div>
 
 </div>
 
 <script>
-// ---------- state ----------
-const S = { protected:[], prox:null, state:'', size:'', evdate:'' };
+// ============== shared content blocks ==============
+const WX = 'DQ9921';
+function refBlock(line){
+  return '<div class="ref"><p style="margin:0 0 4px"><b>想让我免费帮你转介靠谱律师？</b></p>'
+    +'<p class="tag" style="margin:0">'+(line||'我不是律师，也不从中收任何钱——纯帮忙。加我，把情况说一句，我帮你对接。')+'</p>'
+    +'<div class="wx">微信：'+WX+'</div>'
+    +'<p class="tag" style="margin:0">或小红书私信 <b>@Diya美国用工现场</b></p></div>';
+}
+const DISC='⚖️ 以上为一般法律信息与方向指引，整理自官方公开来源，<b>不构成法律意见</b>，也不替代律师，使用本工具不会与我建立律师-委托关系。法律因州、因案而异，时效与适用条件请以官方机构或律师确认为准。';
 
-// ---------- nav ----------
+// lawyer-finding block (reused) — this is "information": channels, not individualized advice
+function lawyerHelpBlock(){
+  return '<h2>去哪找帮助（都免费 / 低成本）</h2>'
+    +'<div class="callout">💡 <b>"我没预算找律师"——这句话很可能是误会。</b>'
+    +'工资、歧视、报复这类案子，<b>很多律师是「胜诉才收费」(contingency)，或第一次咨询免费</b>。重点不是钱，是<b>找到一个肯耐心听你讲完整件事的靠谱律师</b>。</div>'
+    +'<div class="lawline"><b>找雇员律师的专门渠道：</b><br>'
+    +'• <b>NELA</b>（全美雇员律师协会，专做"帮员工告雇主"）→ <a href="https://www.nela.org" target="_blank" rel="noopener">nela.org</a> 的 <i>Find A Lawyer</i>，按州找，<b>能筛中文律师</b>。<br>'
+    +'• 加州还有州级的 <b>CELA</b> → <a href="https://www.cela.org" target="_blank" rel="noopener">cela.org</a>。<br>'
+    +'• 收入有限 → 先找 <b>legal aid</b>（法律援助）：<a href="https://www.lawhelp.org" target="_blank" rel="noopener">lawhelp.org</a>。</div>'
+    +refBlock();
+}
+
+// ============== nav ==============
 function go(id){
   document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo({top:0,behavior:'instant'});
 }
-function route(r){
-  if(r==='retal') go('s-r1');
-  else if(r==='admin') go('s-admin');
-  else go('s-other');
-}
 
-// ---------- step R1: protected activities ----------
+// ============== retaliation state ==============
+const S = { protected:[], prox:null, state:'', size:'', evdate:'' };
 const PROT = [
   "口头或书面提过：工资 / 加班费 / 工时算得不对",
   "投诉过歧视或骚扰（哪怕只是私下跟 HR 或上级说）",
@@ -286,15 +286,14 @@ const PROT = [
   const box=document.getElementById('r1opts');
   PROT.forEach((t,i)=>{
     const lab=document.createElement('label'); lab.className='check';
-    lab.innerHTML=`<input type="checkbox" value="${i}"><span>${t}</span>`;
+    lab.innerHTML='<input type="checkbox" value="'+i+'"><span>'+t+'</span>';
     const cb=lab.querySelector('input');
     cb.addEventListener('change',()=>{
-      // "none" is exclusive
       const none=PROT.length-1;
       if(i===none && cb.checked){
         box.querySelectorAll('input').forEach(o=>{if(o!==cb){o.checked=false;o.closest('.check').classList.remove('sel')}});
       } else if(cb.checked){
-        const noneCb=box.querySelector(`input[value="${none}"]`);
+        const noneCb=box.querySelector('input[value="'+none+'"]');
         if(noneCb.checked){noneCb.checked=false;noneCb.closest('.check').classList.remove('sel')}
       }
       lab.classList.toggle('sel',cb.checked);
@@ -305,11 +304,7 @@ const PROT = [
     box.appendChild(lab);
   });
 })();
-
-// ---------- step R2 ----------
 function setProx(v,next){ S.prox=v; go(next); }
-
-// ---------- step R3 ----------
 function setSize(v){
   S.size=v;
   document.querySelectorAll('[data-sz]').forEach(b=>b.classList.remove('sel'));
@@ -320,17 +315,11 @@ function syncR3(){
   S.state=document.getElementById('state').value;
   document.getElementById('r3btn').disabled = !(S.state && S.size);
 }
-
-// ---------- statute of limitations ----------
-// returns {days, label, agency}
 function deadlineDays(){
-  // parse YYYY-MM-DD as LOCAL midnight (avoid new Date('...') UTC shift)
   const p=S.evdate.split('-');
   const ev=new Date(+p[0], +p[1]-1, +p[2]);
-  // discrimination/retaliation via EEOC: 300 days in states w/ FEP agency (CA,NY,NJ,WA), else 180
   const fep = ['CA','NY','NJ','WA'].includes(S.state);
   const limit = fep ? 300 : 180;
-  // add days via millisecond arithmetic, then normalize to local midnight
   const ddl=new Date(ev.getTime()+limit*86400000); ddl.setHours(0,0,0,0);
   const today=new Date(); today.setHours(0,0,0,0);
   const days=Math.round((ddl-today)/86400000);
@@ -338,65 +327,66 @@ function deadlineDays(){
 }
 function fmtDate(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
-// ---------- build retaliation result ----------
 function buildRetalResult(){
   S.evdate=document.getElementById('evdate').value;
   const none = S.protected.includes(PROT.length-1) && S.protected.length===1;
   const hasProtected = !none;
   const dl=deadlineDays();
 
-  // assessment
+  // 3rd-person, general — INFORMATION not individualized advice
   let pill, title, body;
   if(!hasProtected){
-    pill='<span class="pill null">先别急下结论</span>';
-    title='单看目前的信息，"报复"这条路还不清晰';
-    body='报复(retaliation)成立，通常需要你先做过一件"受保护的行为"（比如投诉、提工资问题、请假）。你刚才没勾选——但很可能是<b>没意识到自己做过</b>，或者你的情况其实属于别的类型（比如单纯的歧视、或工资问题）。<b>这不代表你没救</b>，只是需要有人帮你把事情捋一遍。强烈建议加我说一句，或找个免费咨询的律师聊聊。';
+    pill='<span class="pill null">先别急着下结论</span>';
+    title='单看这些信息，"报复"这条路还不太清晰';
+    body='法律上的"报复(retaliation)"，通常需要当事人<b>先做过一件"受保护的行为"</b>（比如投诉、提工资问题、请假）。你刚才没勾到——但很多人其实是<b>没意识到自己做过</b>，或者遇到的情况属于别的类型（比如单纯的歧视、或工资问题）。<b>这不代表没救</b>，常常是需要有人帮着把事情捋一遍。可以加我说一句，或找个免费咨询的律师聊聊。';
   } else if(S.prox==='close'){
-    pill='<span class="pill good">信号比较强</span>';
-    title='你的情况，具备报复案的关键要素';
-    body='你做了受保护的行为，而且<b>紧接着</b>就被区别对待——这个"时间上的紧接"在法律上是很重要的证据。这<b>不等于</b>稳赢（还要看证据、公司说法等），但<b>足够值得认真找律师聊一次</b>。下面的步骤请尽快做。';
+    pill='<span class="pill good">这种模式，信号通常比较强</span>';
+    title='符合这种情况的人，往往具备了报复案的关键要素';
+    body='当一个人做了受保护的行为、<b>紧接着</b>就被区别对待，这个"时间上的紧接"在法律上是很重要的一种证据。这<b>不等于</b>稳赢（还要看证据、公司怎么解释等），但通常<b>足够值得认真找律师聊一次</b>。下面的步骤建议尽快做。';
   } else if(S.prox==='mid'){
-    pill='<span class="pill good">值得认真对待</span>';
-    title='你的情况有报复的要素，值得找人聊';
-    body='你做了受保护的行为，之后被区别对待，间隔一两个月——仍然有关联性，只是不如"紧接着"那么强。<b>证据和时间线会很关键</b>。建议按下面步骤固定证据，并找律师免费聊一次。';
+    pill='<span class="pill good">这种情况通常值得认真对待</span>';
+    title='这种情况一般具备报复的要素，值得找人聊';
+    body='做了受保护的行为、之后被区别对待，间隔一两个月——通常仍有关联性，只是不如"紧接着"那么强。这类情况里<b>证据和时间线会很关键</b>。建议按下面的步骤把证据固定下来，并找律师免费聊一次。';
   } else {
-    pill='<span class="pill warn">可以试，但要管理预期</span>';
-    title='有报复的影子，但时间隔得较远';
-    body='间隔越久，越难直接证明"因果关系"——但这<b>不代表没用</b>，尤其如果中间还有别的事。把时间线尽量补全，让律师判断。下面步骤照做。';
+    pill='<span class="pill warn">可以试，但通常要管理预期</span>';
+    title='这种情况有报复的影子，但时间隔得较远';
+    body='间隔越久，越难直接证明"因果关系"——但这<b>不代表没用</b>，尤其如果中间还有别的事在发生。把时间线尽量补全，让律师来判断会更准。下面的步骤照做。';
   }
 
-  // size note
   let sizeNote='';
   if(S.size==='1'){
     sizeNote = S.state==='CA'
-      ? '⚠️ 公司只有 1–4 人：联邦反歧视法（需 15 人以上）可能用不上，但<b>加州只要有 1 名员工就管骚扰、5 人以上管歧视</b>，州法可能是你的救生圈。'
+      ? '⚠️ 公司只有 1–4 人：联邦反歧视法（要 15 人以上）可能用不上，但<b>加州只要有 1 名员工就管骚扰、5 人以上就管歧视</b>，州法常常是小公司员工的救生圈。'
       : (S.state==='NY'
-        ? '⚠️ 公司只有 1–4 人：联邦法门槛够不着，但<b>纽约州反歧视法覆盖所有雇主、不看人数</b>，走州这条路。'
-        : '⚠️ 公司只有 1–4 人：联邦反歧视法通常需要 15 人以上，可能够不着。<b>但很多州法门槛低得多</b>——别因为公司小就放弃，找人确认你所在州的规则。');
+        ? '⚠️ 公司只有 1–4 人：联邦法门槛够不着，但<b>纽约州反歧视法覆盖所有雇主、不看人数</b>，可以走州这条路。'
+        : '⚠️ 公司只有 1–4 人：联邦反歧视法通常要 15 人以上，可能够不着。<b>但很多州法门槛低得多</b>——别因为公司小就放弃，找人确认一下你所在州的规则。');
   } else if(S.size==='5'||S.size==='?'){
-    sizeNote='ℹ️ 公司人数不多/不确定：联邦法常需 15 人以上，但<b>不少州（如加州 5+、纽约不限）门槛更低</b>。人数会直接影响走联邦还是走州，记得让律师帮你确认。';
+    sizeNote='ℹ️ 公司人数不多/不确定：联邦法常要 15 人以上，但<b>不少州（如加州 5+、纽约不限）门槛更低</b>。人数会直接影响走联邦还是走州，记得让律师帮你确认。';
   }
 
   document.getElementById('rresultcard').innerHTML =
     pill + '<h2>'+title+'</h2><p>'+body+'</p>' +
     (sizeNote?'<div class="callout">'+sizeNote+'</div>':'') +
-    '<p class="tag">注：报复/歧视通常要<b>先向 EEOC 或州机构投诉</b>、拿到 right-to-sue 之后才能上法庭，不能直接起诉——这一步很多人不知道。</p>';
+    '<p class="tag">小知识：报复/歧视通常要<b>先向 EEOC 或州机构投诉</b>、拿到 right-to-sue（起诉许可）之后才能上法庭，不能直接起诉——这一步很多人不知道。来源：<a href="https://www.eeoc.gov/filing-charge-discrimination" target="_blank" rel="noopener">EEOC</a>。</p>';
 
-  // countdown
   let cd, danger = dl.days<=45;
+  const stateNote = (S.state==='CA'||S.state==='NY')
+    ? '<br>📌 你在'+(S.state==='CA'?'加州':'纽约州')+'，<b>州机构（'+(S.state==='CA'?'加州 CRD':'纽约州人权机构')+'）的时效通常长到 3 年</b>，比联邦窗口宽得多——就算联邦这条紧了，州这条往往还来得及。'
+    : '';
   if(dl.days>0){
-    cd = '<div class="countdown'+(danger?' danger':'')+'">还剩约 '+dl.days+' 天<small>向 EEOC' + (dl.fep?'（你所在州 '+dl.limit+' 天时效）':'（'+dl.limit+' 天时效）') + '投诉的常见截止：'+fmtDate(dl.ddl)+' 前</small></div>'
-       + (danger?'<p style="margin-top:12px;color:var(--danger)"><b>时间不多了，请尽快行动。</b></p>':'<p style="margin-top:12px">别拖——按天算、过期这条路可能就关了。</p>');
+    cd = '<div class="countdown'+(danger?' danger':'')+'">联邦窗口还剩约 '+dl.days+' 天<small>向 EEOC' + (dl.fep?'（你所在州按 '+dl.limit+' 天算）':'（按 '+dl.limit+' 天算）') + '投诉的常见截止：'+fmtDate(dl.ddl)+' 前'+stateNote+'</small></div>'
+       + (danger?'<p style="margin-top:12px;color:var(--danger)"><b>联邦这条时间不多了，尽快行动更稳。</b></p>':'<p style="margin-top:12px">别拖——这类期限按天算，过了这条路可能就关了。</p>');
   } else {
-    cd = '<div class="countdown danger">联邦投诉时效可能已过<small>按事发日推算，'+dl.limit+' 天窗口或已关闭</small></div>'
-       + '<p style="margin-top:12px"><b>先别放弃。</b>① 有些州的时效长得多（如加州歧视类可到 3 年）；② 如果"被穿小鞋"还在<b>持续发生</b>，时效可能重新计算。<b>务必找人确认</b>，别自己下定论。</p>';
+    cd = '<div class="countdown'+(S.state==='CA'||S.state==='NY'?'':' danger')+'">联邦 '+dl.limit+' 天窗口可能已过<small>按事发日推算</small></div>'
+       + '<p style="margin-top:12px"><b>先别放弃。</b>① 有些州的时效长得多'+(stateNote?'（见上一行）':'（如加州歧视类可到 3 年）')+'；② 如果"被穿小鞋"还在<b>持续发生</b>，时效可能重新计算。<b>务必找人确认</b>，别自己下定论。'+stateNote+'</p>';
   }
   document.getElementById('rcountcard').innerHTML = '<h2>你的时间窗口</h2>'+cd;
-
+  document.getElementById('lawyer-help').innerHTML = lawyerHelpBlock();
+  document.getElementById('disc-retal').innerHTML = DISC;
   go('s-rresult');
 }
 
-// ---------- timeline template download ----------
+// ============== timeline download ==============
 function downloadTimeline(){
   const rows = [
     ['日期','发生了什么（客观描述，别带情绪）','谁在场 / 谁说的','有没有证据（邮件/短信/截图存在哪）'],
@@ -412,46 +402,106 @@ function downloadTimeline(){
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 
-// ---------- admin/benefits answers ----------
+// ============== admin / benefits ==============
 const ADMIN = {
-  wage:{
-    h:'最后一份工资 / 加班费',
-    body:'<p>大多数州对"最后一份工资什么时候必须发"有明确规定，逾期不发雇主可能要付罚金。这通常<b>不用打官司</b>，先走两步：</p>'
-      +'<div class="magic"><b>第 1 步 · 用对行话发邮件给 HR：</b><br>就写一句要 <code>final paycheck</code> 的具体发放日期，并问是否包含未休的 <code>accrued PTO / vacation payout</code>（很多州未休年假要折现）。<b>一定要书面（邮件），别只打电话。</b></div>'
-      +'<div class="magic"><b>第 2 步 · HR 不理你：</b><br>直接找你<b>所在州的劳工局（State Labor Commissioner / DOL）</b>，网上能免费提交欠薪投诉(unpaid wage claim)，他们会替你出面。</div>'
-      +'<p class="tag">加班费算错、克扣同理——联邦 FLSA 几乎覆盖所有公司，工资类是最好维权的一类。</p>'
-  },
-  account:{
-    h:'押在账户里的钱（commuter / FSA / HSA）',
-    body:'<p>这类钱常常卡在"离职后还能不能用"的截止规则上，而 HR 和第三方客服自己也常说不清。关键是问对一个词：</p>'
+  wage:{ h:'最后一份工资 / 加班费',
+    body:'<p>大多数州对"最后一份工资什么时候必须发"有明确规定，逾期不发，雇主可能还要付罚金。这通常<b>不用打官司</b>，先走两步：</p>'
+      +'<div class="magic"><b>第 1 步 · 用对行话发邮件给 HR：</b><br>写一句要 <code>final paycheck</code> 的具体发放日期，并问是否包含未休的 <code>accrued PTO / vacation payout</code>（很多州未休年假要折现）。<b>一定要书面（邮件），别只打电话。</b></div>'
+      +'<div class="magic"><b>第 2 步 · HR 不理你：</b><br>找你<b>所在州的劳工局（State Labor Commissioner / DOL）</b>，网上能免费提交欠薪投诉(unpaid wage claim)，他们会替你出面。</div>'
+      +'<p class="src">来源：美国劳工部工资工时司 <a href="https://www.dol.gov/agencies/whd" target="_blank" rel="noopener">dol.gov/agencies/whd</a></p>' },
+  account:{ h:'押在账户里的钱（commuter / FSA / HSA）',
+    body:'<p>这类钱常卡在"离职后还能不能用"的截止规则上，而 HR 和第三方客服自己也常说不清。关键是问对一个词：</p>'
       +'<div class="magic"><b>用对行话：</b>发邮件给 HR（抄送第三方 benefit 机构，如 Alight / WEX / HealthEquity），问 <code>run-off period</code>——也就是离职后还能提交报销的<b>截止日期</b>是哪天，<b>要书面回复</b>。</div>'
-      +'<div class="magic"><b>HSA 是你的钱：</b>HSA 账户里的余额<b>永远属于你</b>，离职也带得走，可以转去自己的 HSA。FSA 一般"不用就没了"，但有 run-off 窗口能补交之前发生的费用。</div>'
-      +'<div class="magic"><b>客服踢皮球时：</b>让 HR 帮你联系第三方机构的 <code>account team / employer support</code>（不是普通客服热线）——走 B 端通道往往才有人能处理。</div>'
-      +'<p class="tag">真实案例：有人汇丰离职后 commuter 账户押着 $1,800，就是靠这套话术要回来的。</p>'
-  },
-  '401k':{
-    h:'401(k) / 退休金',
-    body:'<p><b>好消息：401(k) 里你自己存的钱 100% 是你的</b>，离职不会没收（公司 match 的部分要看 vesting 归属年限）。你有几个选择：</p>'
+      +'<div class="magic"><b>HSA 是你的钱：</b>HSA 账户里的余额<b>永远属于你</b>，离职也带得走，可以转去自己的 HSA。FSA 一般"不用就没了"，但通常有 run-off 窗口能补交之前已经发生的费用。</div>'
+      +'<div class="magic"><b>客服踢皮球时：</b>让 HR 帮你联系第三方机构的 <code>account team / employer support</code>（不是普通客服热线）——走企业端通道往往才有人能处理。</div>'
+      +'<p class="tag">真实例子：有人汇丰离职后 commuter 账户押着 $1,800，就是靠这套话术要回来的。</p>' },
+  '401k':{ h:'401(k) / 退休金',
+    body:'<p><b>好消息：401(k) 里你自己存的钱 100% 是你的</b>，离职不会没收（公司 match 的部分要看 vesting 归属年限）。几个选择：</p>'
       +'<div class="magic">① <b>留在原计划</b>（余额够大通常可以不动）；② <b>转出(rollover)</b> 到新公司的 401(k) 或自己的 IRA——<b>选 direct rollover（直接转账）</b>，别选支票打给自己，否则可能被预扣 20% 税。</div>'
-      +'<p>找 401(k) 的<b>plan administrator</b>（如 Fidelity / Vanguard / Empower，对账单上有），问 <code>rollover</code> 流程即可。</p>'
-      +'<p class="tag">注意 vesting：公司配的钱可能要做满 N 年才全归你，离职时未归属的部分会被收回，这是合法的。</p>'
-  },
-  reimb:{
-    h:'报销 / 离职清单',
-    body:'<div class="magic"><b>报销卡住：</b>书面邮件 HR，写明 <code>expense reimbursement</code> 的提交截止和发放时间；附上单据。很多州规定合理的工作开销雇主必须报。</div>'
-      +'<div class="magic"><b>没收到离职清单：</b>主动邮件要 <code>offboarding checklist</code> / final documents，包括最后工资、福利截止日(COBRA 通知)、未休假折现等。书面留痕，后面万一有纠纷这就是证据。</div>'
-  }
+      +'<p>找 401(k) 的 <b>plan administrator</b>（如 Fidelity / Vanguard / Empower，对账单上有），问 <code>rollover</code> 流程即可。</p>'
+      +'<p class="tag">注意 vesting：公司配(match)的钱可能要做满 N 年才全归你，离职时未归属的部分会被收回，这是合法的。</p>' },
+  reimb:{ h:'报销 / 离职清单',
+    body:'<div class="magic"><b>报销卡住：</b>书面邮件 HR，写明 <code>expense reimbursement</code> 的提交截止和发放时间，附上单据。很多州规定合理的工作开销雇主必须报。</div>'
+      +'<div class="magic"><b>没收到离职清单：</b>主动邮件要 <code>offboarding checklist</code> / final documents，包括最后工资、福利截止日（<code>COBRA</code> 通知）、未休假折现等。书面留痕，后面万一有纠纷这就是证据。</div>' }
 };
 function adminPick(k){
   const a=ADMIN[k];
   document.getElementById('adminAnswer').innerHTML =
     '<hr class="soft"><h2 style="font-size:18px">'+a.h+'</h2>'+a.body
-    +'<div class="ref"><p style="margin:0 0 4px"><b>说不清、或对方一直踢皮球？</b></p>'
-    +'<p class="tag" style="margin:0">把情况发我一句，我帮你看看怎么措辞、找谁。免费，纯帮忙。</p>'
-    +'<div class="wx">微信：DQ9921</div>'
-    +'<p class="tag" style="margin:0">或小红书私信 <b>@Diya美国用工现场</b></p></div>'
+    +refBlock('说不清、或对方一直踢皮球？把情况发我一句，我帮你看看怎么措辞、找谁。免费，纯帮忙。')
     +'<button class="btn ghost sm" style="margin-top:14px" onclick="downloadTimeline()">⬇️ 顺手存个时间线模板（万一以后要用）</button>';
   document.getElementById('adminAnswer').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ============== generic content categories ==============
+// All written 3rd-person/general = INFORMATION, each section sourced.
+const CAT = {
+  wage:{
+    title:'💵 钱没给对（工资 / 加班费 / 小费）',
+    intro:'这一类是<b>最好维权</b>的：管工资工时的联邦法 FLSA 几乎覆盖所有公司，<b>不看公司大小、不看你的身份</b>。很多人不知道，自己本来就受保护。',
+    law:'<p>常见的违法情形：低于最低工资、<b>每周超过 40 小时不付 1.5 倍加班费</b>、让你"打卡前/下班后"干活(off-the-clock)、克扣小费、故意把你分类成 <code>exempt</code> 或 <code>1099</code> 来逃加班费。</p><p>联邦最低工资是 $7.25，但很多州/市高得多（按你所在地为准）。</p>',
+    self:'<div class="magic"><b>先自己做：</b>把工资单、打卡/排班记录、能证明你实际工作时间的短信邮件<b>存下来</b>，大致算一下被少给了多少。</div>'
+      +'<div class="magic"><b>用对行话：</b>给 HR 书面（邮件）提出 <code>unpaid wages / unpaid overtime</code>，要个说法。书面留痕。</div>',
+    sol:'FLSA 时效一般是 <b>2 年</b>（雇主"故意"违法是 3 年）；<b>州时效不一样</b>（比如加州可到 3–4 年）。越早越好。',
+    channel:'<b>联邦：</b>美国劳工部工资工时司(DOL Wage & Hour)，可<b>免费、保密</b>投诉，<b>不问移民身份</b> → <a href="https://www.dol.gov/agencies/whd" target="_blank" rel="noopener">dol.gov/agencies/whd</a>。<br><b>州：</b>你所在州的劳工局(State Labor Commissioner)，本州投诉时效常更长。<br>金额大或复杂 → 找雇员律师（工资类常 contingency）。',
+    src:'美国劳工部工资工时司 dol.gov/agencies/whd'
+  },
+  discrim:{
+    title:'⚖️ 因为我是谁被区别对待（歧视）',
+    intro:'法律保护的是基于<b>受保护类别</b>的区别对待——不是所有"不公平"。一个常被误会的点：老板很烂、很"不道德"，<b>不等于</b>违法；得挂得上某个受保护类别才行。',
+    law:'<p>受保护类别包括：<b>种族、肤色、国籍、性别（含怀孕、性取向、跨性别）、年龄 40 岁以上、残疾、宗教、遗传信息</b>。基于这些做出的不利对待（不录用、降薪、调岗、开除等）可能违法。</p>'
+      +'<p>⚠️ <b>公司人数门槛很关键</b>：联邦 Title VII / ADA 要 <b>15 人以上</b>（年龄 ADEA 要 20+）。但<b>很多州门槛低得多</b>——加州 5 人就管歧视、1 人就管性骚扰，纽约州不看人数。公司小，先看州法。</p>',
+    self:'<div class="magic"><b>先自己做：</b>记录时间线——谁、什么时候、说了/做了什么。特别留意 <b>comparator</b>：有没有别人情况差不多、却被区别对待（这是很有用的证据）。把证据存到私人邮箱。</div>',
+    sol:'走 EEOC 通常 <b>180 天，你所在州有公平就业机构则 300 天</b>，从不利行为那天起算；<b>加州 CRD、纽约州人权机构是 3 年</b>。要先过 EEOC/州机构、拿到 right-to-sue 才能上法庭。',
+    channel:'<b>联邦：</b>EEOC，可免费自己在线投诉 → <a href="https://www.eeoc.gov/filing-charge-discrimination" target="_blank" rel="noopener">eeoc.gov</a>。<br><b>州：</b>加州 <a href="https://calcivilrights.ca.gov" target="_blank" rel="noopener">calcivilrights.ca.gov</a>、纽约 <a href="https://dhr.ny.gov" target="_blank" rel="noopener">dhr.ny.gov</a>。<br>找律师 → NELA / 加州 CELA（见下）。',
+    src:'EEOC eeoc.gov；加州 CRD calcivilrights.ca.gov；纽约州人权署 dhr.ny.gov'
+  },
+  harass:{
+    title:'🛑 被性骚扰 / 工作环境待不下去',
+    intro:'骚扰在法律上算歧视的一种。不是所有"难受"都违法，但<b>基于受保护类别</b>的骚扰，严重或频繁到改变了工作环境，就可能违法。',
+    law:'<p>两类常见：<b>交换条件型(quid pro quo)</b>——用工作好处/惩罚换取容忍骚扰；<b>敌意工作环境(hostile work environment)</b>——基于性别/种族等的言行严重或普遍到让人没法正常工作。</p>'
+      +'<p>📌 <b>加州只要公司有 1 名员工就管性骚扰</b>，门槛极低。报告骚扰本身，也让你成了"做过受保护行为"的人——之后被报复同样受保护。</p>',
+    self:'<div class="magic"><b>先自己做：</b>按公司政策<b>书面</b>报告给 HR/上级（留痕很重要）；每一次发生都<b>记下来</b>（时间、地点、原话、有没有人看到）；保存短信、邮件、聊天记录。</div>'
+      +'<div class="callout red">🚨 如果涉及人身安全/暴力威胁，先保护自己、必要时报警，这比任何流程都优先。</div>',
+    sol:'同歧视：EEOC <b>180 / 300 天</b>，加州、纽约州机构 <b>3 年</b>。',
+    channel:'<b>联邦：</b>EEOC → <a href="https://www.eeoc.gov/filing-charge-discrimination" target="_blank" rel="noopener">eeoc.gov</a>。<br><b>州：</b>加州 <a href="https://calcivilrights.ca.gov" target="_blank" rel="noopener">calcivilrights.ca.gov</a>、纽约 <a href="https://dhr.ny.gov" target="_blank" rel="noopener">dhr.ny.gov</a>。<br>找律师 → NELA / CELA（见下）。',
+    src:'EEOC eeoc.gov；加州 CRD；纽约州人权署 dhr.ny.gov'
+  },
+  immig:{
+    title:'🛂 被拿身份 / 签证 / I-9 威胁',
+    intro:'很多人不知道：<b>基于身份的就业歧视和"拿身份威胁你"，是有专门的联邦机构免费管的。</b>有合法工作身份的人（包括 H1B、绿卡）都受保护。',
+    law:'<p>可能违法的情形：因为你的<b>公民身份 / 国籍</b>区别对待；<b>document abuse</b>——办 I-9 时要求你提供超出法律要求、或指定特定的证件；用"我让你身份出问题 / 不给你续签"来威胁、报复你（比如你提了工资问题）。</p>'
+      +'<p>📌 H1B 也有专门保护——不能因为你维权或想换工作就拿身份压你。</p>',
+    self:'<div class="magic"><b>先自己做：</b>把威胁的<b>原话</b>记下来、留下证据（短信/邮件/录音看你所在州是否允许）；了解你的身份其实是<b>有保护</b>的，对方那套"我让你滚回去"多半是吓唬。</div>'
+      +'<div class="callout">🔒 身份相关的投诉，IER 这个机构<b>专门保护投诉人</b>，是为了让你敢于举报而设的免费渠道。</div>',
+    sol:'IER 有自己的受理时限，<b>越早联系越好</b>；如果同时涉及工资或歧视，也可以同时走 DOL / EEOC。',
+    channel:'<b>司法部 移民与雇员权利处(DOJ-IER)</b>：<b>免费热线、有中文等语言协助</b> → 1-800-255-7688；网站 <a href="https://www.justice.gov/ier" target="_blank" rel="noopener">justice.gov/ier</a>。<br>涉及工资 → DOL；涉及国籍歧视也可 → EEOC。',
+    src:'美国司法部移民与雇员权利处 justice.gov/ier，工人热线 1-800-255-7688'
+  },
+  term:{
+    title:'📄 被开除 / 收到 severance 要签',
+    intro:'美国大多数州是 <b>at-will（任意雇佣）</b>：开除本身通常合法。但如果<b>真实原因</b>是受保护类别、报复、你拒绝做违法的事、或你行使了法定权利，那开除就可能非法——关键看"为什么被开"。',
+    law:'<div class="callout red">🚨 <b>最重要的一句：被开除，先别急着签 severance！</b><br>severance（离职补偿）协议里<b>通常有 release / waiver 条款</b>——你一签字，就<b>放弃了将来 pursue claims（追究公司）的权利</b>。一旦签了，前面说的"非法开除"基本就告不了了。</div>'
+      +'<div class="magic"><b>你有权要时间考虑：</b>可以回复 HR 你需要时间 review。<b>如果你 40 岁以上</b>，法律(OWBPA)通常给你 <b>至少 21 天考虑期 + 签后 7 天反悔期</b>。签之前，<b>最好让律师花十几分钟看一眼</b>——很多就是免费咨询。</div>',
+    self:'<div class="magic"><b>先自己做：</b>想清楚"被开前发生过什么"——你之前投诉过吗？请过假吗？提过工资问题吗？属于某个受保护类别吗？这些决定了开除合不合法。把相关证据、那份 severance 原件都存好，<b>别在压力下当场签字</b>。</div>',
+    sol:'看触发原因：如果是歧视/报复，走 EEOC <b>180/300 天</b>或加州、纽约州 <b>3 年</b>；severance 本身一般会给你考虑期。',
+    channel:'<b>强烈建议签字前找雇员律师看一眼</b> → NELA <a href="https://www.nela.org" target="_blank" rel="noopener">nela.org</a>（能筛中文律师）、加州 CELA <a href="https://www.cela.org" target="_blank" rel="noopener">cela.org</a>。如果原因涉及歧视/报复 → EEOC / 州机构。',
+    src:'EEOC eeoc.gov；OWBPA（40岁以上 severance 考虑期）为联邦法'
+  }
+};
+function openCat(k){
+  const c=CAT[k];
+  let html='<h2>'+c.title+'</h2><p class="lede">'+c.intro+'</p>'
+    +'<h3>这种情况，法律上是怎么回事</h3>'+c.law
+    +'<h3>先自己就能做的</h3>'+c.self
+    +'<h3>时间窗口（时效）</h3><div class="lawline">'+c.sol+'</div>'
+    +'<h3>去哪找人帮忙</h3><div class="lawline">'+c.channel+'</div>'
+    +'<button class="btn ghost sm" style="margin-top:14px" onclick="downloadTimeline()">⬇️ 下载时间线模板</button>'
+    +'<p class="src">📚 来源：'+c.src+'</p>';
+  document.getElementById('contentcard').innerHTML=html;
+  document.getElementById('content-lawyer').innerHTML=lawyerHelpBlock();
+  document.getElementById('disc-content').innerHTML=DISC;
+  go('s-content');
 }
 </script>
 </body>
