@@ -172,6 +172,21 @@
     color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:6px 15px;letter-spacing:.03em}
   .wide-only{display:none}
   @media(min-width:900px){.wide-only{display:inline}}
+  /* 选州 intake */
+  .state-pick{max-width:560px;margin:0 auto 22px;text-align:center}
+  .state-pick label{display:block;font-size:14px;color:var(--ink);font-weight:600;margin:0 0 9px}
+  .state-pick label span{font-weight:400;color:var(--muted);font-size:12.5px}
+  .state-pick select{font:inherit;font-size:15px;width:100%;max-width:420px;padding:12px 14px;
+    border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);cursor:pointer}
+  .state-pick select:focus{outline:none;border-color:var(--accent)}
+  /* 详情页：州渠道块 */
+  .state-channel{margin-top:16px}
+  .state-fed{background:var(--accent-soft);border-radius:12px;padding:14px 16px;font-size:14.5px;line-height:1.7}
+  .state-fed p{margin:6px 0 0}
+  .state-box{margin-top:12px;border:1.5px solid var(--accent);border-radius:12px;padding:14px 16px;font-size:14.5px;line-height:1.7}
+  .state-box p{margin:6px 0 0}
+  .state-note{color:var(--muted);font-size:13px}
+  .state-box .state-note{color:var(--warn)}
   /* 卡片 hover：阴影上浮 + 左缘 accent（交互反馈，呼应 EdTech 体验）*/
   .entry-grid .opt{transition:border-color .18s,box-shadow .22s,transform .18s;position:relative;overflow:hidden}
   .entry-grid .opt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
@@ -258,6 +273,25 @@
       <p class="hero-sub">选一个最像你的情况。每种都有大白话科普、现在自己就能做的几步，还有去哪找肯免费咨询的律师。</p>
       <p class="hero-tag">免费 · 匿名 · 不用登录</p>
     </div>
+    <div class="state-pick">
+      <label for="introState">你在哪个州？<span>（只问这一个 · 决定给你哪个州的维权渠道）</span></label>
+      <select id="introState" onchange="setState(this.value)">
+        <option value="">选择你所在的州…</option>
+        <option value="CA">加州 California</option>
+        <option value="NY">纽约州 New York</option>
+        <option value="NJ">新泽西 New Jersey</option>
+        <option value="TX">德州 Texas</option>
+        <option value="WA">华盛顿州 Washington</option>
+        <option value="MA">麻州 Massachusetts</option>
+        <option value="IL">伊利诺伊 Illinois</option>
+        <option value="GA">佐治亚 Georgia</option>
+        <option value="PA">宾州 Pennsylvania</option>
+        <option value="MD">马里兰 Maryland</option>
+        <option value="VA">弗吉尼亚 Virginia</option>
+        <option value="FL">佛州 Florida</option>
+        <option value="OTHER">其他州 / 不确定</option>
+      </select>
+    </div>
     <div class="entry-grid">
       <div id="entrygrid" style="display:contents"></div>
       <button class="opt opt-admin" onclick="go('s-admin')"><span class="t">离职后钱或福利卡住了，没人管</span><span class="d">最后一份工资、押在账户里的钱、报销、401k / commuter / FSA 余额</span></button>
@@ -343,6 +377,41 @@ function track(name,props){
     localStorage.setItem('_ert_ev',JSON.stringify(log.slice(-300)));
   }catch(e){}
 }
+// ===================== 多州渠道（联邦兜底 + 重点州直链 + 通用 locator）=====================
+// 所有 URL 经 2026-06 web 验证为官方 .gov 来源。
+let SELECTED_STATE='';
+try{ SELECTED_STATE=localStorage.getItem('_ert_state')||''; }catch(e){}
+const STATE_NAMES={CA:'加州',NY:'纽约州',NJ:'新泽西',TX:'德州',WA:'华盛顿州',MA:'麻州',IL:'伊利诺伊',GA:'佐治亚',PA:'宾州',MD:'马里兰',VA:'弗吉尼亚',FL:'佛州',OTHER:'你所在的州'};
+// 已验证州级公平就业 / 民权机构（歧视·报复·身份威胁类）
+const STATE_FEPA={
+  CA:{name:'加州',n:'加州民权局 (CRD)',u:'https://calcivilrights.ca.gov/employment/'},
+  NY:{name:'纽约州',n:'纽约州人权署 (DHR)',u:'https://dhr.ny.gov'},
+  NJ:{name:'新泽西',n:'新泽西民权司 (DCR)',u:'https://www.njcivilrights.gov'},
+  WA:{name:'华盛顿州',n:'华盛顿州人权委员会 (WSHRC)',u:'https://www.hum.wa.gov/discrimination-complaint',note:'⚠️ 华州州级时效较短——一般 6 个月内，比联邦还紧，别拖。'},
+  TX:{name:'德州',n:'德州劳动力委员会民权司 (TWC)',u:'https://www.twc.texas.gov/programs/civil-rights/employment-discrimination',note:'需公司 15+ 员工、180 天内。不满足就走联邦 EEOC。'}
+};
+function setState(v){ SELECTED_STATE=v; try{localStorage.setItem('_ert_state',v);}catch(e){} track('state_select',{state:v}); }
+function syncIntroState(){ const el=document.getElementById('introState'); if(el&&SELECTED_STATE) el.value=SELECTED_STATE; }
+function stateChannelBlock(){
+  const fed='<div class="state-fed"><b>联邦渠道（全美 50 州都能用）</b>'
+    +'<p>• 歧视 / 报复 / 拿身份威胁你 → <b>EEOC</b>，按邮编找最近办公室 <a href="https://www.eeoc.gov/zipcode/search" target="_blank" rel="noopener">eeoc.gov/zipcode/search</a>（电话 1-800-669-4000）</p>'
+    +'<p>• 工资 / 加班 / 工时 → <b>劳工部 DOL</b>，各州劳工局目录 <a href="https://www.dol.gov/agencies/whd/state/contacts" target="_blank" rel="noopener">dol.gov/agencies/whd/state/contacts</a>（电话 1-866-487-9243，<b>免费、保密、不问移民身份</b>）</p></div>';
+  const s=SELECTED_STATE;
+  let st;
+  if(STATE_FEPA[s]){
+    const f=STATE_FEPA[s];
+    st='<div class="state-box"><b>📍 '+f.name+'的州级机构（常常比联邦门槛低、时效长）</b>'
+      +'<p>'+f.n+' → <a href="'+f.u+'" target="_blank" rel="noopener">'+f.u.replace(/^https?:\/\//,'')+'</a></p>'
+      +(f.note?'<p class="state-note">'+f.note+'</p>':'')+'</div>';
+  } else {
+    const nm = s&&STATE_NAMES[s] ? STATE_NAMES[s] : '你所在的州';
+    st='<div class="state-box"><b>📍 '+nm+'的州级机构怎么找</b>'
+      +'<p>用上面两个官方目录（EEOC 邮编搜索 / DOL 各州目录）就能查到你这个州的对口机构。</p>'
+      +'<p class="state-note">很多州还有自己的人权委员会 / 劳工厅，<b>州法时效有时比联邦更长</b>，值得一起查。</p></div>';
+  }
+  return '<div class="state-channel">'+fed+st+'</div>';
+}
+
 // 精准 lead-in label：只把"以冒号结尾的引导句"变橙色标签，避免误伤枚举句（如"① 留在原计划"）
 function applyLeadLabels(scope){
   (scope||document).querySelectorAll('.magic,.callout:not(.red)').forEach(box=>{
@@ -618,6 +687,7 @@ const ENTRY_ORDER=['retal','wage','discrim','harass','immig','term','nlra'];
   g.innerHTML=ENTRY_ORDER.map(k=>{const c=CATS[k];
     return '<button class="opt" onclick="openCat(\''+k+'\')"><span class="t">'+c.entry+'</span><span class="d">'+c.entryD+'</span></button>';
   }).join('');
+  syncIntroState();   // 回填上次选的州
 })();
 
 // ===================== content (library) page =====================
@@ -628,7 +698,7 @@ function openCat(key){
     +'<details class="block fold reveal" open><summary>这种情况，法律上是怎么回事</summary><div class="fold-body">'+c.law+'</div></details>'
     +'<details class="block fold reveal"><summary>先自己就能做的</summary><div class="fold-body">'+c.self+'</div></details>'
     +'<details class="block fold reveal"><summary>时间窗口（时效）</summary><div class="fold-body"><div class="lawline">'+c.sol+'</div></div></details>'
-    +'<details class="block fold reveal"><summary>去哪找人帮忙</summary><div class="fold-body"><div class="lawline">'+c.channel+'</div></div></details>'
+    +'<details class="block fold reveal"><summary>去哪找人帮忙</summary><div class="fold-body"><div class="lawline">'+c.channel+'</div>'+stateChannelBlock()+'</div></details>'
     +'<p class="src reveal">来源：'+c.src+'</p>';
   if(c.quiz){
     h+='<section class="block reveal"><div class="gf" style="margin-bottom:12px">想知道你<b>自己</b>这种情况大概是什么位置？做个 2 分钟自查（匿名，只在你手机上）。</div>'
