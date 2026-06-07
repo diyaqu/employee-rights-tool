@@ -355,13 +355,12 @@ function lawyerHelpBlock(){
     +'<div class="lawline"><b>找雇员律师的专门渠道：</b><br>'
     +'• <b>NELA</b>（全美雇员律师协会，专做"帮员工"）→ <a href="https://www.nela.org" target="_blank" rel="noopener">nela.org</a> 的 <i>Find A Lawyer</i>，按州找，<b>能筛中文律师</b>。<br>'
     +'• 加州还有州级的 <b>CELA</b> → <a href="https://www.cela.org" target="_blank" rel="noopener">cela.org</a>。<br>'
-    +'• 收入有限 → 先找 <b>legal aid</b>（法律援助）：<a href="https://www.lawhelp.org" target="_blank" rel="noopener">lawhelp.org</a>。</div>';
+    +'• 收入有限 → 先找 <b>legal aid</b>（法律援助）：国会设立的 <a href="https://www.lsc.gov/about-lsc/what-legal-aid/i-need-legal-help" target="_blank" rel="noopener">lsc.gov</a> 按地址帮你找本地免费法律援助（家庭年收入约在联邦贫困线 125% 以下可申请）。</div>';
 }
 function actionsCard(){
   return '<div class="card"><h2>现在自己就能做的 3 件事</h2><ul class="steps">'
     +'<li><b>今天就把证据存下来</b><span class="d">相关的邮件、短信、微信、工资单、排班表、绩效记录，<b>截图转存到你自己的私人邮箱或云盘</b>——别只留在公司电脑/邮箱里，那些可能随时被收回。只存<b>真实发生</b>的东西就好。</span></li>'
-    +'<li><b>写一份时间线</b><span class="d">日期 + 发生了什么 + 谁在场。客观记录、别带情绪。做了个模板，点一下就能下载。</span>'
-    +'<button class="btn ghost sm" style="margin-top:8px" onclick="downloadTimeline()">下载时间线模板</button></li>'
+    +'<li><b>写一份时间线</b><span class="d">用手机备忘录或随便一个文档，按 <b>日期 + 发生了什么 + 谁在场 + 证据存在哪</b> 一条条记下来。客观、别带情绪。这份时间线是你后面找律师时最值钱的东西。</span></li>'
     +'<li><b>在截止日期前，找人免费聊一次</b><span class="d">不用马上打官司——先找一个<b>肯免费听你讲完整件事</b>的律师或机构，帮你判断方向。渠道见下面。</span></li>'
     +'</ul></div>';
 }
@@ -778,17 +777,6 @@ function renderQuizResult(r){
   go('s-quizres');
 }
 
-// ===================== timeline download =====================
-function downloadTimeline(){
-  const rows=[['日期','发生了什么（客观描述，别带情绪）','谁在场 / 谁说的','有没有证据（邮件/短信/截图存在哪）'],
-    ['例：2026-03-01','我口头跟主管 X 提加班费好像没算对','主管 X、同事 Y','存在我私人 Gmail'],
-    ['','','',''],['','','',''],['','','',''],['','','',''],['','','','']];
-  const csv='﻿'+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\r\n');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='我的时间线_employee-rights.csv';
-  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-}
-
 // ===================== admin / benefits =====================
 const ADMIN={
   wage:{ h:'最后一份工资 / 加班费',
@@ -813,8 +801,7 @@ function adminPick(k){
   track('admin_pick',{kind:k});   // 离职后卡住：哪类最多
   const a=ADMIN[k];
   document.getElementById('adminAnswer').innerHTML='<hr class="soft"><h2 style="font-size:18px">'+a.h+'</h2>'+a.body
-    +refBlock('对方一直踢皮球时：别只口头催——把要求写成邮件留痕（写清具体金额和截止日）。卡太久没动静，找你所在州的劳工局，多数能免费提交欠薪 / 报销投诉，他们会替你出面。')
-    +'<button class="btn ghost sm" style="margin-top:14px" onclick="downloadTimeline()">顺手存个时间线模板</button>';
+    +refBlock('对方一直踢皮球时：别只口头催——把要求写成邮件留痕（写清具体金额和截止日）。卡太久没动静，找你所在州的劳工局，多数能免费提交欠薪 / 报销投诉，他们会替你出面。');
   document.getElementById('adminAnswer').scrollIntoView({behavior:'smooth',block:'start'});
 }
 </script>
