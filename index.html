@@ -117,8 +117,8 @@
   /* lead-in label: 引导句独立成行 + 暖橙色，跟正文分层（治"先自己做：和正文挤一坨"）*/
   /* lead-in label：仅"以冒号结尾的引导句"（JS applyLeadLabels 精准加 class，避免误伤枚举句）*/
   b.lead-label{
-    display:block;color:var(--lead);font-size:14px;font-weight:700;
-    font-family:var(--sans);letter-spacing:.02em;margin:0 0 5px;line-height:1.5}
+    display:block;color:var(--lead);font-size:15.5px;font-weight:700;
+    letter-spacing:.01em;margin:0 0 5px;line-height:1.6}
   .callout.red>b:first-child{color:var(--danger)}
   .magic{padding-top:3px;padding-bottom:3px}
   .magic code{color:var(--ink)}
@@ -136,8 +136,9 @@
   #s-intro .lede,#s-admin .lede,#s-admin p,#s-quizres .lede,
   .block,.block p,.block li,.block .lawline,.block .callout,.block .magic{
     font-family:var(--serif)}
+  /* 只有真控件用黑体；正文/标签/引导文案全部宋体，杜绝上下行字体掺杂 */
   .block .btn,.block .opt,.block .pill,.block code,.block input,.block select,
-  .block .check span,.src,.gf,b.lead-label{font-family:var(--sans)}
+  .block .check span,.src{font-family:var(--sans)}
   #s-cat .src{margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
   /* scroll reveal */
   .reveal{opacity:0;transform:translateY(18px);
