@@ -133,7 +133,7 @@
   #s-cat p,#s-cat li .d,#s-cat .lawline,#s-cat .callout,#s-cat .magic{line-height:1.85}
   #s-cat .lede{font-size:16.5px;line-height:1.8;color:#454842}
   /* 阅读内容统一宋体；UI 控件 / 标签 / 来源 / 代码保持黑体（editorial 标准：serif 正文 + sans 界面）*/
-  #s-intro .lede,#s-admin .lede,#s-admin p,#s-quizres .lede,
+  #s-intro .lede,#s-admin .lede,#s-admin p,#s-quizres .lede,#s-cat .lede,.cat-head .lede,
   .block,.block p,.block li,.block .lawline,.block .callout,.block .magic{
     font-family:var(--serif)}
   /* 只有真控件用黑体；正文/标签/引导文案全部宋体，杜绝上下行字体掺杂 */
@@ -270,7 +270,7 @@
   <div class="step active" id="s-intro">
     <div class="hero">
       <h1>在美国，被雇主亏待了？<br>先别慌，我陪你理一理。</h1>
-      <p class="hero-sub">选一个最像你的情况。每种都有大白话科普、现在自己就能做的几步，还有去哪找肯免费咨询的律师。</p>
+      <p class="hero-sub">先搞清楚发生了什么，知道现在能做哪几步。说人话，一看就懂。</p>
       <p class="hero-tag">免费 · 匿名 · 不用登录</p>
     </div>
     <div class="state-pick">
@@ -788,7 +788,7 @@ const ADMIN={
     body:'<div class="magic"><b>用对行话：</b>发邮件给 HR（抄送第三方 benefit 机构，如 Alight / WEX / HealthEquity），问 <code>run-off period</code>——离职后还能提交报销的<b>截止日期</b>是哪天，<b>要书面回复</b>。</div>'
       +'<div class="magic"><b>HSA 是你的钱：</b>HSA 余额<b>永远属于你</b>，离职也带得走。FSA 一般"不用就没了"，但通常有 run-off 窗口能补交之前已发生的费用。</div>'
       +'<div class="magic"><b>客服踢皮球时：</b>让 HR 帮你联系第三方机构的 <code>account team / employer support</code>（不是普通客服热线）。</div>'
-      +'<p class="tag">真实例子：有人汇丰离职后 commuter 账户押着 $1,800，就是靠这套话术要回来的。</p>' },
+      +'<p class="tag">这套话术是有用的——把押在账户里的钱要回来，靠的就是书面留痕、找对接口人、别只打电话。</p>' },
   '401k':{ h:'401(k) / 退休金',
     body:'<p><b>好消息：401(k) 里你自己存的钱 100% 是你的</b>，离职不会没收（公司 match 部分看 vesting）。</p>'
       +'<div class="magic">① <b>留在原计划</b>；② <b>转出(rollover)</b> 到新公司 401(k) 或自己的 IRA——<b>选 direct rollover</b>，别选支票打给自己，否则可能被预扣 20% 税。</div>'
