@@ -144,6 +144,23 @@
     transition:opacity .55s cubic-bezier(.2,.6,.2,1),transform .55s cubic-bezier(.2,.6,.2,1)}
   .reveal.in{opacity:1;transform:none}
   @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+  /* 折叠 section：第一段默认展开（关键信息），其余点标题展开（progressive disclosure）*/
+  details.fold{padding:0;margin:0;border-top:1px solid var(--line)}
+  details.fold:first-of-type{border-top:none}
+  details.fold>summary{
+    list-style:none;cursor:pointer;user-select:none;
+    font-family:var(--serif);font-size:19px;font-weight:600;color:var(--ink);
+    padding:26px 0;display:flex;justify-content:space-between;align-items:center;gap:16px;
+    transition:color .15s}
+  details.fold>summary:hover{color:var(--accent)}
+  details.fold>summary::-webkit-details-marker{display:none}
+  details.fold>summary::after{content:"展开";font-family:var(--sans);font-size:13px;font-weight:500;
+    color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:4px 12px;white-space:nowrap;flex:none}
+  details.fold[open]>summary::after{content:"收起";color:var(--muted);background:#eef0ed}
+  details.fold[open]>summary{padding-bottom:6px}
+  .fold-body{padding:0 0 26px;animation:foldin .3s ease}
+  @keyframes foldin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  @media(min-width:900px){details.fold>summary{font-size:22px;padding:30px 0}}
   #s-cat h2{font-size:26px;line-height:1.4;margin-bottom:14px}
   #s-cat h3{font-size:19px;color:var(--ink)}
   /* ===== 首页 hero（landing 式：一句话点题 + 直接看到 7 类）===== */
@@ -607,10 +624,10 @@ function openCat(key){
   track('category_open',{category:key});   // 哪类情况最多人点
   const c=CATS[key];
   let h='<header class="cat-head reveal"><h2>'+c.title+'</h2><p class="lede">'+c.intro+'</p></header>'
-    +'<section class="block reveal"><h3>这种情况，法律上是怎么回事</h3>'+c.law+'</section>'
-    +'<section class="block reveal"><h3>先自己就能做的</h3>'+c.self+'</section>'
-    +'<section class="block reveal"><h3>时间窗口（时效）</h3><div class="lawline">'+c.sol+'</div></section>'
-    +'<section class="block reveal"><h3>去哪找人帮忙</h3><div class="lawline">'+c.channel+'</div></section>'
+    +'<details class="block fold reveal" open><summary>这种情况，法律上是怎么回事</summary><div class="fold-body">'+c.law+'</div></details>'
+    +'<details class="block fold reveal"><summary>先自己就能做的</summary><div class="fold-body">'+c.self+'</div></details>'
+    +'<details class="block fold reveal"><summary>时间窗口（时效）</summary><div class="fold-body"><div class="lawline">'+c.sol+'</div></div></details>'
+    +'<details class="block fold reveal"><summary>去哪找人帮忙</summary><div class="fold-body"><div class="lawline">'+c.channel+'</div></div></details>'
     +'<p class="src reveal">来源：'+c.src+'</p>';
   if(c.quiz){
     h+='<section class="block reveal"><div class="gf" style="margin-bottom:12px">想知道你<b>自己</b>这种情况大概是什么位置？做个 2 分钟自查（匿名，只在你手机上）。</div>'
