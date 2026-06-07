@@ -9,26 +9,29 @@
   :root{
     --bg:#f6f7f5; --card:#ffffff; --ink:#1c1d1a; --muted:#6b6f68;
     --line:#e6e8e3; --accent:#2f6f57; --accent-soft:#e8f1ec;
+    --lead:#b9632a; --lead-soft:#f7ede2;   /* marigold lead-in label */
     --warn:#9a5b00; --warn-soft:#fbf1df; --danger:#a13b2f; --danger-soft:#fbeae6;
     --radius:14px; --shadow:0 1px 2px rgba(0,0,0,.03);
+    --serif:"Songti SC","STSong",Georgia,"Times New Roman","SimSun",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
   body{
     background:var(--bg); color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
-    line-height:1.66; font-size:17px;
+    font-family:var(--sans);
+    line-height:1.7; font-size:16px;
     padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
   .wrap{max-width:560px;margin:0 auto;padding:18px 18px 64px}
   .brand{font-size:15px;color:var(--ink);font-weight:600;letter-spacing:-.01em;margin:0 0 3px}
   .topnote{font-size:12px;color:var(--muted);line-height:1.5;margin:0}
   .fineprint{font-size:12.5px;color:var(--muted);line-height:1.6;margin:18px 0 0}
-  h1{font-size:25px;line-height:1.35;margin:0 0 10px;letter-spacing:-.01em}
-  h2{font-size:20px;margin:0 0 12px;letter-spacing:-.01em}
-  h3{font-size:16px;margin:18px 0 8px;letter-spacing:-.01em}
-  p{margin:0 0 14px}
-  .lede{color:var(--muted);font-size:15.5px}
+  h1{font-family:var(--serif);font-size:27px;font-weight:600;line-height:1.4;margin:0 0 12px;letter-spacing:0}
+  h2{font-family:var(--serif);font-size:21px;font-weight:600;line-height:1.45;margin:0 0 12px;letter-spacing:0}
+  h3{font-family:var(--serif);font-size:17px;font-weight:600;margin:24px 0 9px;letter-spacing:0;color:#2a2c27}
+  p{margin:0 0 13px}
+  .lede{color:var(--muted);font-size:15px;line-height:1.72}
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 18px;box-shadow:var(--shadow);margin-bottom:16px}
   .step{display:none}
   .step.active{display:block;animation:fade .25s ease}
@@ -92,6 +95,44 @@
   .tag{font-size:12.5px;color:var(--muted)}
   hr.soft{border:none;border-top:1px solid var(--line);margin:18px 0}
   .lawline{border-left:3px solid var(--accent-soft);padding-left:13px;margin:12px 0}
+  /* lead-in label: 引导句独立成行 + 暖橙色，跟正文分层（治"先自己做：和正文挤一坨"）*/
+  /* lead-in label：仅"以冒号结尾的引导句"（JS applyLeadLabels 精准加 class，避免误伤枚举句）*/
+  b.lead-label{
+    display:block;color:var(--lead);font-size:14px;font-weight:700;
+    font-family:var(--sans);letter-spacing:.02em;margin:0 0 5px;line-height:1.5}
+  .callout.red>b:first-child{color:var(--danger)}
+  .magic{padding-top:3px;padding-bottom:3px}
+  .magic code{color:var(--ink)}
+
+  /* ===== 阅读流（详情页：去卡片框，section 大留白，滚动节奏）===== */
+  .cat-layout #catcard,.cat-layout #cat-lawyer{
+    background:transparent;border:none;box-shadow:none;border-radius:0;padding:0;margin:0}
+  .block{padding:38px 0 0;margin:0}
+  .block:first-of-type{padding-top:10px}
+  .block>h3:first-child{margin-top:0}
+  .cat-head{margin:0 0 4px}
+  #s-cat p,#s-cat li .d,#s-cat .lawline,#s-cat .callout,#s-cat .magic{line-height:1.85}
+  #s-cat .lede{font-size:16.5px;line-height:1.8;color:#454842}
+  /* 阅读内容统一宋体；UI 控件 / 标签 / 来源 / 代码保持黑体（editorial 标准：serif 正文 + sans 界面）*/
+  #s-intro .lede,#s-admin .lede,#s-admin p,#s-quizres .lede,
+  .block,.block p,.block li,.block .lawline,.block .callout,.block .magic{
+    font-family:var(--serif)}
+  .block .btn,.block .opt,.block .pill,.block code,.block input,.block select,
+  .block .check span,.src,.gf,b.lead-label{font-family:var(--sans)}
+  #s-cat .src{margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
+  /* scroll reveal */
+  .reveal{opacity:0;transform:translateY(18px);
+    transition:opacity .55s cubic-bezier(.2,.6,.2,1),transform .55s cubic-bezier(.2,.6,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+  #s-cat h2{font-size:26px;line-height:1.4;margin-bottom:14px}
+  #s-cat h3{font-size:19px;color:var(--ink)}
+  @media(min-width:900px){
+    #s-cat{max-width:700px}
+    #s-cat h2{font-size:31px}
+    #s-cat h3{font-size:22px}
+    .block{padding-top:48px}
+  }
 
   /* ===== layout primitives (all sizes) ===== */
   .topbar{margin-bottom:2px}
@@ -133,6 +174,19 @@
     #s-admin{max-width:780px;margin:0 auto}
   }
 </style>
+<!-- ===== 匿名行为分析（Microsoft Clarity）=====
+     隐私：只记录匿名交互（点了哪类、自查结果分布），不收集姓名/邮箱/电话/任何 PII。
+     启用：去 clarity.microsoft.com 免费注册 → 拿 Project ID → 填到下面 CLARITY_ID。
+     留空时完全不加载，0 网络请求、0 报错。 -->
+<script>
+  var CLARITY_ID = ""; // ← 注册后把 Clarity Project ID 粘到这里（如 "ab12cd34ef"）
+  (function(c,l,a,r,i){
+    if(!i) return;
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    var t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    var y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window,document,"clarity","script",CLARITY_ID);
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -149,7 +203,7 @@
       <p class="lede">钱没给对、被穿小鞋、离职后福利卡住、被开除还被塞一份合同让你赶紧签——这些很多在美打工人都遇到过，又常常不知道：这算不算事？能不能维权？</p>
       <p class="lede">这个小工具帮你三件事：弄清你的情况在法律上是怎么回事、现在自己能先做哪几步、去哪找肯免费咨询的靠谱律师。说大白话，不用懂法律。</p>
       <button class="btn" onclick="go('s-entry')">开始 →</button>
-      <p class="fineprint">完全匿名 · 不用注册 · 你填的任何东西只留在你自己手机上。本工具仅整理公开法律信息（每条附出处），不构成针对你个人的法律意见，也不替代律师。</p>
+      <p class="fineprint">完全匿名 · 不用注册 · 你填的任何东西只留在你自己手机上。本站仅用匿名统计了解大家最关心哪类问题来改进内容，不收集姓名/邮箱/任何个人身份信息。本工具仅整理公开法律信息（每条附出处），不构成针对你个人的法律意见，也不替代律师。</p>
     </div>
   </div>
 
@@ -232,10 +286,44 @@ function actionsCard(){
     +'<li><b>在截止日期前，找人免费聊一次</b><span class="d">不用马上打官司——先找一个<b>肯免费听你讲完整件事</b>的律师或机构，帮你判断方向。渠道见下面。</span></li>'
     +'</ul></div>';
 }
+// 匿名埋点：上报到 Clarity（若启用）+ 本地兜底。只记交互类型，绝不含 PII。
+function track(name,props){
+  try{
+    if(window.clarity){
+      clarity('event',name);
+      if(props) Object.keys(props).forEach(k=>clarity('set',k,String(props[k])));
+    }
+    var log=JSON.parse(localStorage.getItem('_ert_ev')||'[]');
+    log.push({t:Date.now(),n:name,p:props||{}});
+    localStorage.setItem('_ert_ev',JSON.stringify(log.slice(-300)));
+  }catch(e){}
+}
+// 精准 lead-in label：只把"以冒号结尾的引导句"变橙色标签，避免误伤枚举句（如"① 留在原计划"）
+function applyLeadLabels(scope){
+  (scope||document).querySelectorAll('.magic,.callout:not(.red)').forEach(box=>{
+    const b=box.firstElementChild;
+    if(b&&b.tagName==='B'&&/[：:]\s*$/.test(b.textContent)) b.classList.add('lead-label');
+  });
+}
 function go(id){
   document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  const el=document.getElementById(id);
+  el.classList.add('active');
+  applyLeadLabels(el);
   window.scrollTo({top:0,behavior:'instant'});
+}
+// scroll-reveal: 进视口逐块 fade-up（Ethena 式阅读节奏）
+let _io=null;
+function observeReveals(scope){
+  if(!('IntersectionObserver' in window)){
+    (scope||document).querySelectorAll('.reveal').forEach(el=>el.classList.add('in')); return;
+  }
+  if(!_io){
+    _io=new IntersectionObserver(es=>{es.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add('in');_io.unobserve(e.target);}
+    });},{threshold:.1,rootMargin:'0px 0px -6% 0px'});
+  }
+  (scope||document).querySelectorAll('.reveal:not(.in)').forEach(el=>_io.observe(el));
 }
 function fmtDate(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
@@ -489,26 +577,28 @@ const ENTRY_ORDER=['retal','wage','discrim','harass','immig','term','nlra'];
 
 // ===================== content (library) page =====================
 function openCat(key){
+  track('category_open',{category:key});   // 哪类情况最多人点
   const c=CATS[key];
-  let h='<h2>'+c.title+'</h2><p class="lede">'+c.intro+'</p>'
-    +'<h3>这种情况，法律上是怎么回事</h3>'+c.law
-    +'<h3>先自己就能做的</h3>'+c.self
-    +'<h3>时间窗口（时效）</h3><div class="lawline">'+c.sol+'</div>'
-    +'<h3>去哪找人帮忙</h3><div class="lawline">'+c.channel+'</div>'
-    +'<p class="src">来源：'+c.src+'</p>';
+  let h='<header class="cat-head reveal"><h2>'+c.title+'</h2><p class="lede">'+c.intro+'</p></header>'
+    +'<section class="block reveal"><h3>这种情况，法律上是怎么回事</h3>'+c.law+'</section>'
+    +'<section class="block reveal"><h3>先自己就能做的</h3>'+c.self+'</section>'
+    +'<section class="block reveal"><h3>时间窗口（时效）</h3><div class="lawline">'+c.sol+'</div></section>'
+    +'<section class="block reveal"><h3>去哪找人帮忙</h3><div class="lawline">'+c.channel+'</div></section>'
+    +'<p class="src reveal">来源：'+c.src+'</p>';
   if(c.quiz){
-    h+='<hr class="soft"><div class="gf" style="margin-bottom:12px">想知道你<b>自己</b>这种情况大概是什么位置？做个 2 分钟自查（匿名，只在你手机上）。</div>'
-      +'<button class="btn" onclick="quizStart(\''+key+'\')">2 分钟自查我的情况</button>';
+    h+='<section class="block reveal"><div class="gf" style="margin-bottom:12px">想知道你<b>自己</b>这种情况大概是什么位置？做个 2 分钟自查（匿名，只在你手机上）。</div>'
+      +'<button class="btn" onclick="quizStart(\''+key+'\')">2 分钟自查我的情况</button></section>';
   }
   document.getElementById('catcard').innerHTML=h;
-  document.getElementById('cat-lawyer').innerHTML=lawyerHelpBlock();
+  document.getElementById('cat-lawyer').innerHTML='<section class="block reveal">'+lawyerHelpBlock()+'</section>';
   document.getElementById('disc-cat').innerHTML=DISC;
   go('s-cat');
+  requestAnimationFrame(()=>observeReveals(document.getElementById('s-cat')));
 }
 
 // ===================== generic quiz engine =====================
 let Qkey=null, Qsteps=[], Qidx=0, QA={};
-function quizStart(key){ Qkey=key; QA={}; Qidx=0; Qsteps=CATS[key].quiz.steps; renderStep(); go('s-quiz'); }
+function quizStart(key){ track('quiz_start',{category:key}); Qkey=key; QA={}; Qidx=0; Qsteps=CATS[key].quiz.steps; renderStep(); go('s-quiz'); }
 function quizBack(){ if(Qidx===0){ openCat(Qkey); } else { Qidx--; renderStep(); } }
 function quizNext(){ if(Qidx<Qsteps.length-1){ Qidx++; renderStep(); } else { renderQuizResult(CATS[Qkey].quiz.result(QA)); } }
 function quizPick(id,v){ QA[id]=v; quizNext(); }
@@ -559,6 +649,7 @@ function commitSS(){ quizNext(); }
 function commitDate(id){ QA[id]=document.getElementById('qdate').value; quizNext(); }
 
 function renderQuizResult(r){
+  track('quiz_complete',{category:Qkey,verdict:(r.pill||'').replace(/<[^>]*>/g,'').trim()});  // 自查结果分布
   let h='<button class="back" onclick="openCat(\''+Qkey+'\')">← 返回</button>';
   h+='<div class="card">'+(r.pill||'')+'<h2>'+r.title+'</h2><p>'+r.body+'</p>'
     +(r.note?'<div class="callout">'+r.note+'</div>':'')+(r.tag?'<p class="tag">'+r.tag+'</p>':'')+'</div>';
@@ -604,6 +695,7 @@ const ADMIN={
       +'<div class="magic"><b>没收到离职清单：</b>主动邮件要 <code>offboarding checklist</code>，包括最后工资、福利截止日(<code>COBRA</code> 通知)、未休假折现等。书面留痕。</div>' }
 };
 function adminPick(k){
+  track('admin_pick',{kind:k});   // 离职后卡住：哪类最多
   const a=ADMIN[k];
   document.getElementById('adminAnswer').innerHTML='<hr class="soft"><h2 style="font-size:18px">'+a.h+'</h2>'+a.body
     +refBlock('对方一直踢皮球时：别只口头催——把要求写成邮件留痕（写清具体金额和截止日）。卡太久没动静，找你所在州的劳工局，多数能免费提交欠薪 / 报销投诉，他们会替你出面。')
