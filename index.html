@@ -132,6 +132,10 @@
   .cat-head{margin:0 0 4px}
   #s-cat p,#s-cat li .d,#s-cat .lawline,#s-cat .callout,#s-cat .magic{line-height:1.85}
   #s-cat .lede{font-size:16.5px;line-height:1.8;color:#454842}
+  /* 长正文分段呼吸：段间距加大，避免大段文字堆一块读着费劲（尤其报复类最长）*/
+  #s-cat .fold-body>p{margin-bottom:19px}
+  #s-cat .fold-body>p:last-child{margin-bottom:0}
+  #s-cat .fold-body .callout,#s-cat .fold-body .magic,#s-cat .fold-body .lawline{margin-top:18px;margin-bottom:18px}
   /* 全站阅读内容统一宋体（.step 覆盖所有页面：首页/详情/自查/结果/admin）*/
   .step{font-family:var(--serif)}
   /* 只有真控件 / 小字元信息用黑体，杜绝任何上下行字体掺杂 */
@@ -193,7 +197,6 @@
   .entry-grid .opt:hover{border-color:#cdd3cc;box-shadow:0 6px 22px rgba(0,0,0,.07);transform:translateY(-2px)}
   .entry-grid .opt:hover::before{transform:scaleY(1)}
   @media(min-width:900px){
-    #s-cat{max-width:700px}
     #s-cat h2{font-size:31px}
     #s-cat h3{font-size:22px}
     .block{padding-top:48px}
@@ -272,7 +275,7 @@
       <p class="hero-tag">免费 · 匿名 · 不用登录</p>
     </div>
     <div class="state-pick">
-      <label for="introState">你在哪个州？<span>（只问这一个 · 决定给你哪个州的维权渠道）</span></label>
+      <label for="introState">你在哪个州？</label>
       <select id="introState" onchange="setState(this.value)">
         <option value="">选择你所在的州…</option>
         <option value="CA">加州 California</option>
@@ -294,7 +297,7 @@
       <div id="entrygrid" style="display:contents"></div>
       <button class="opt opt-admin" onclick="go('s-admin')"><span class="t">离职后钱或福利卡住了，没人管</span><span class="d">最后一份工资、押在账户里的钱、报销、401k / commuter / FSA 余额</span></button>
     </div>
-    <p class="fineprint">内容整理自官方公开来源，每条附出处，仅供参考，不构成针对你个人的法律意见，也不替代律师。</p>
+    <p class="fineprint">内容整理自官方公开来源，每条附出处，依据截至 2026 年 6 月的现行规则与官方信息整理；法规与机构信息可能调整，使用时请以官方最新发布为准。仅供参考，不构成针对你个人的法律意见，也不替代律师。</p>
   </div>
 
   <!-- ===== GENERIC CONTENT (library) PAGE ===== -->
