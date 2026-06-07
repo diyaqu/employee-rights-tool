@@ -146,6 +146,20 @@
   @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
   #s-cat h2{font-size:26px;line-height:1.4;margin-bottom:14px}
   #s-cat h3{font-size:19px;color:var(--ink)}
+  /* ===== 首页 hero（landing 式：一句话点题 + 直接看到 7 类）===== */
+  .hero{text-align:center;max-width:680px;margin:0 auto;padding:16px 0 26px}
+  .hero h1{font-family:var(--serif);font-size:27px;font-weight:600;line-height:1.4;letter-spacing:0}
+  .hero-sub{color:var(--muted);font-size:15.5px;line-height:1.75;margin:16px auto 0;max-width:560px}
+  .hero-tag{display:inline-block;margin:18px auto 0;font-size:12.5px;font-weight:600;
+    color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:6px 15px;letter-spacing:.03em}
+  .wide-only{display:none}
+  @media(min-width:900px){.wide-only{display:inline}}
+  /* 卡片 hover：阴影上浮 + 左缘 accent（交互反馈，呼应 EdTech 体验）*/
+  .entry-grid .opt{transition:border-color .18s,box-shadow .22s,transform .18s;position:relative;overflow:hidden}
+  .entry-grid .opt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--accent);transform:scaleY(0);transform-origin:top;transition:transform .22s}
+  .entry-grid .opt:hover{border-color:#cdd3cc;box-shadow:0 6px 22px rgba(0,0,0,.07);transform:translateY(-2px)}
+  .entry-grid .opt:hover::before{transform:scaleY(1)}
   @media(min-width:900px){
     #s-cat{max-width:700px}
     #s-cat h2{font-size:31px}
@@ -174,10 +188,14 @@
     #s-intro .lede{font-size:17px}
     #s-intro .fineprint{max-width:640px}
 
+    /* hero (desktop) */
+    #s-intro{max-width:1000px;margin:0 auto}
+    .hero{padding:32px 0 36px}
+    .hero h1{font-size:40px}
+    .hero-sub{font-size:17.5px}
     /* entry routing → card grid */
-    #s-entry .card{padding:28px 30px 32px}
-    .entry-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:8px}
-    .entry-grid .opt{height:100%;padding:22px 20px;border-radius:16px;display:flex;flex-direction:column}
+    .entry-grid{grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+    .entry-grid .opt{height:100%;padding:24px 22px;border-radius:16px;display:flex;flex-direction:column}
     .entry-grid .opt .ic{display:block;font-size:30px;margin:0 0 12px}
     .entry-grid .opt .t{font-size:16.5px;line-height:1.4}
     .entry-grid .opt .d{font-size:14px;margin-top:10px;line-height:1.55}
@@ -217,36 +235,26 @@
 
   <!-- ===== INTRO ===== -->
   <div class="step active" id="s-intro">
-    <div class="card">
+    <div class="hero">
       <h1>在美国，被雇主亏待了？<br>先别慌，我陪你理一理。</h1>
-      <p class="lede">钱没给对、被穿小鞋、离职后福利卡住、被开除还被塞一份合同让你赶紧签——这些很多在美打工人都遇到过，又常常不知道：这算不算事？能不能维权？</p>
-      <p class="lede">这个小工具帮你三件事：弄清你的情况在法律上是怎么回事、现在自己能先做哪几步、去哪找肯免费咨询的靠谱律师。说大白话，不用懂法律。</p>
-      <button class="btn" onclick="go('s-entry')">开始 →</button>
-      <p class="fineprint">完全匿名 · 不用注册 · 你填的任何东西只留在你自己手机上。本站仅用匿名统计了解大家最关心哪类问题来改进内容，不收集姓名/邮箱/任何个人身份信息。本工具仅整理公开法律信息（每条附出处），不构成针对你个人的法律意见，也不替代律师。</p>
+      <p class="hero-sub">选一个最像你的情况。每种都有大白话科普、现在自己就能做的几步，还有去哪找肯免费咨询的律师。</p>
+      <p class="hero-tag">免费 · 匿名 · 不用登录</p>
     </div>
-  </div>
-
-  <!-- ===== ENTRY ROUTING (library-first grid) ===== -->
-  <div class="step" id="s-entry">
-    <button class="back" onclick="go('s-intro')">← 返回</button>
-    <div class="card">
-      <p class="q">你遇到的，主要是哪一种？</p>
-      <p class="sub">选最接近的点进去，先有完整的科普可以读；想确认自己的情况，再做个 2 分钟自查。说大白话，不用懂法律。</p>
-      <div class="entry-grid">
-        <div id="entrygrid" style="display:contents"></div>
-        <button class="opt opt-admin" onclick="go('s-admin')"><span class="t">离职后钱或福利卡住了，没人管</span><span class="d">最后一份工资、押在账户里的钱、报销、401k / commuter / FSA 余额</span></button>
-      </div>
+    <div class="entry-grid">
+      <div id="entrygrid" style="display:contents"></div>
+      <button class="opt opt-admin" onclick="go('s-admin')"><span class="t">离职后钱或福利卡住了，没人管</span><span class="d">最后一份工资、押在账户里的钱、报销、401k / commuter / FSA 余额</span></button>
     </div>
+    <p class="fineprint">完全匿名 · 不用注册 · 你填的任何东西只留在你自己手机上。本站仅用匿名统计了解大家最关心哪类问题来改进内容，不收集姓名/邮箱/任何个人身份信息。本工具仅整理公开法律信息（每条附出处），不构成针对你个人的法律意见，也不替代律师。</p>
   </div>
 
   <!-- ===== GENERIC CONTENT (library) PAGE ===== -->
   <div class="step" id="s-cat">
-    <button class="back" onclick="go('s-entry')">← 返回</button>
+    <button class="back" onclick="go('s-intro')">← 返回</button>
     <div class="cat-layout">
       <div class="card" id="catcard"></div>
       <div class="card" id="cat-lawyer"></div>
     </div>
-    <button class="btn ghost" onclick="go('s-entry')">← 看别的情况</button>
+    <button class="btn ghost" onclick="go('s-intro')">← 看别的情况</button>
     <p class="disc" id="disc-cat"></p>
   </div>
 
@@ -266,7 +274,7 @@
 
   <!-- ===== ADMIN / BENEFITS STUCK ===== -->
   <div class="step" id="s-admin">
-    <button class="back" onclick="go('s-entry')">← 返回</button>
+    <button class="back" onclick="go('s-intro')">← 返回</button>
     <div class="card">
       <h2>离职后钱/福利卡住——多数能要回来</h2>
       <p class="lede">这种情况往往<b>不用打官司</b>，卡住的原因常常只是：没用对"行话"，或者没找对人。下面是通用打法。</p>
