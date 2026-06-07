@@ -357,7 +357,7 @@ function lawyerHelpBlock(){
 }
 function actionsCard(){
   return '<div class="card"><h2>现在自己就能做的 3 件事</h2><ul class="steps">'
-    +'<li><b>今天就把证据存下来</b><span class="d">相关的邮件、短信、微信、工资单、排班表、绩效记录，<b>截图转存到你自己的私人邮箱或云盘</b>——别只留在公司电脑/邮箱里，那些可能随时被收回。只存<b>真实发生</b>的东西就好。</span></li>'
+    +'<li><b>今天就把证据存下来</b><span class="d">跟你自己有关的邮件、短信、微信、工资单、排班表、绩效记录，<b>截图或转存到你自己的私人邮箱/云盘</b>——别只留在公司电脑/邮箱里，那些可能随时被收回。<b>但只存你本来就有权保留的东西</b>：别打包公司的机密文件、客户/他人隐私、商业秘密、医疗记录这类——拿这些反而可能给自己惹麻烦，真要拷敏感材料前先问律师。只存<b>真实发生</b>的就好。</span></li>'
     +'<li><b>写一份时间线</b><span class="d">用手机备忘录或随便一个文档，按 <b>日期 + 发生了什么 + 谁在场 + 证据存在哪</b> 一条条记下来。客观、别带情绪。这份时间线是你后面找律师时最值钱的东西。</span></li>'
     +'<li><b>在截止日期前，找人免费聊一次</b><span class="d">不用马上打官司——先找一个<b>肯免费听你讲完整件事</b>的律师或机构，帮你判断方向。渠道见下面。</span></li>'
     +'</ul></div>';
@@ -384,8 +384,8 @@ const STATE_FEPA={
   CA:{name:'加州',n:'加州民权局 (CRD)',u:'https://calcivilrights.ca.gov/employment/'},
   NY:{name:'纽约州',n:'纽约州人权署 (DHR)',u:'https://dhr.ny.gov'},
   NJ:{name:'新泽西',n:'新泽西民权司 (DCR)',u:'https://www.njcivilrights.gov'},
-  WA:{name:'华盛顿州',n:'华盛顿州人权委员会 (WSHRC)',u:'https://www.hum.wa.gov/discrimination-complaint',note:'⚠️ 华州州级时效较短——一般 6 个月内，比联邦还紧，别拖。'},
-  TX:{name:'德州',n:'德州劳动力委员会民权司 (TWC)',u:'https://www.twc.texas.gov/programs/civil-rights/employment-discrimination',note:'需公司 15+ 员工、180 天内。不满足就走联邦 EEOC。'}
+  WA:{name:'华盛顿州',n:'华盛顿州人权委员会 (WSHRC)',u:'https://www.hum.wa.gov/discrimination-complaint',note:'⚠️ 华州州级时效较短——一般 6 个月内（怀孕类约 12 个月）。注意：光填问卷可能不算正式立案，要在期限内完成正式签字的 charge。别拖。'},
+  TX:{name:'德州',n:'德州劳动力委员会民权司 (TWC)',u:'https://www.twc.texas.gov/programs/civil-rights/employment-discrimination',note:'一般歧视类 180 天内、需公司 15+ 员工（性骚扰类窗口更宽，约 300 天、覆盖更小公司）。注意：联邦 EEOC 一般也要 15+ 员工，公司太小时州法/联邦都可能够不着，要找人确认。'}
 };
 function setState(v){ SELECTED_STATE=v; try{localStorage.setItem('_ert_state',v);}catch(e){} track('state_select',{state:v}); }
 function syncIntroState(){ const el=document.getElementById('introState'); if(el&&SELECTED_STATE) el.value=SELECTED_STATE; }
@@ -440,20 +440,25 @@ function fmtDate(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2
 
 // ===================== deadline helper (EEOC-based) =====================
 function eeocCountdown(state,dateStr){
-  const p=dateStr.split('-'); const ev=new Date(+p[0],+p[1]-1,+p[2]);
-  const fep=['CA','NY','NJ','WA'].includes(state); const limit=fep?300:180;
-  const ddl=new Date(ev.getTime()+limit*86400000); ddl.setHours(0,0,0,0);
+  const p=dateStr.split('-');
+  // 用 setDate 加天数（避免 *86400000 在夏令时切换时差一天）
+  const mkDdl=(n)=>{ const d=new Date(+p[0],+p[1]-1,+p[2]); d.setDate(d.getDate()+n); d.setHours(0,0,0,0); return d; };
+  const d180=mkDdl(180), d300=mkDdl(300);
   const today=new Date(); today.setHours(0,0,0,0);
-  const days=Math.round((ddl-today)/86400000);
+  const days180=Math.round((d180-today)/86400000);
+  const days300=Math.round((d300-today)/86400000);
   const is3=(state==='CA'||state==='NY');
-  const sNote=is3?'<br>你在'+(state==='CA'?'加州':'纽约州')+'，州机构（'+(state==='CA'?'加州 CRD':'纽约州人权机构')+'）时效通常是 <b>3 年</b>，比联邦窗口宽得多——联邦这条紧了，州那条往往还来得及。':'';
+  const sNote=is3?'<br>你在'+(state==='CA'?'加州':'纽约州')+'，州机构时效通常是 <b>3 年</b>（'+(state==='CA'?'加州 CRD':'纽约州 DHR')+'），比联邦窗口宽得多——联邦这条紧了，州那条往往还来得及。':'';
   let cd;
-  if(days>0){
-    const danger=days<=45;
-    cd='<div class="countdown'+(danger?' danger':'')+'">联邦窗口还剩约 '+days+' 天<small>向 EEOC（按 '+limit+' 天算）投诉的常见截止：'+fmtDate(ddl)+' 前'+sNote+'</small></div>'
-      +(danger?'<p style="margin-top:12px;color:var(--danger)"><b>联邦这条时间不多了，尽快更稳。</b></p>':'<p style="margin-top:12px">这类期限按天算，别拖——过了这条路可能就关了。</p>');
+  if(days180>0){
+    const danger=days180<=45;
+    cd='<div class="countdown'+(danger?' danger':'')+'">联邦投诉窗口：事发后 <b>180–300 天</b>'
+      +'<small>是 180 还是 300 天，取决于你所在州有没有对应的州级公平就业机构（有就通常按 300 天）。<b>按最稳的 180 天算，截止约 '+fmtDate(d180)+'；最长 300 天约 '+fmtDate(d300)+'。</b>务必向 EEOC 确认你这个州适用哪个，并尽量早做。'+sNote+'</small></div>'
+      +(danger?'<p style="margin-top:12px;color:var(--danger)"><b>按最短窗口算时间不多了，尽快更稳。</b></p>':'<p style="margin-top:12px">这类期限按天算，别拖——过了这条路可能就关了。</p>');
+  } else if(days300>0){
+    cd='<div class="countdown danger">可能已过最短 180 天，但或许还在 300 天窗口内<small>按事发日推算：180 天约 '+fmtDate(d180)+'（已过），300 天约 '+fmtDate(d300)+'。如果你所在州有州级公平就业机构，可能适用 300 天。<b>立刻向 EEOC 确认，别拖。</b>'+sNote+'</small></div>';
   } else {
-    cd='<div class="countdown'+(is3?'':' danger')+'">联邦 '+limit+' 天窗口可能已过<small>按事发日推算</small></div>'
+    cd='<div class="countdown'+(is3?'':' danger')+'">联邦窗口（最长 300 天）可能已过<small>按事发日推算</small></div>'
       +'<p style="margin-top:12px"><b>先别放弃。</b>'+(is3?'你所在州时效通常 3 年，往往还来得及。':'有些州时效长得多；如果情况还在持续发生，时效可能重新计算。')+'务必找人确认，别自己下定论。'+sNote+'</p>';
   }
   return '<div class="card"><h2>你的时间窗口</h2>'+cd+'</div>';
@@ -477,7 +482,8 @@ const CATS = {
     intro:'报复(retaliation)连续多年是 EEOC 投诉量第一的类型。核心逻辑：你一旦做了"受保护的行为"，雇主之后对你的管理动作就会被时间线盯着。',
     law:'<p>法律上报复要三个要素：① 你做过<b>受保护行为</b> → ② 之后遭到<b>物质性不利对待</b> → ③ 两者有<b>因果关联</b>。</p>'
       +'<p><b>受保护行为分两类</b>：<b>参与型</b>（提投诉、作证、配合 EEO 调查）→ 绝对受保护，哪怕底层指控最后不成立；<b>反对型</b>（反对你<b>合理善意相信</b>是歧视的事）→ 只要是真心善意就受保护。<b>非正式口头投诉也算</b>：私下跟上级说一句"加班费好像不对"，保护就开始了。</p>'
-      +'<p>"物质性不利对待"门槛<b>很宽</b>：任何<b>可能让一个理性的人不敢去投诉</b>的动作都算，不限于开除——调岗、差评、排差班、甚至离职后给负面背调、威胁举报你的移民身份，都可能算。</p>',
+      +'<p>"物质性不利对待"门槛<b>很宽</b>：任何<b>可能让一个理性的人不敢去投诉</b>的动作都算，不限于开除——调岗、差评、排差班、甚至离职后给负面背调、威胁举报你的移民身份，都可能算。</p>'
+      +'<p>⚠️ <b>不同类型的"举报后被报复"，走的机构和时限不一样</b>：只有<b>歧视 / 骚扰</b>类的报复才走 EEOC（下面的时效按 EEOC 算）；如果你当初举报的是<b>安全 / 职业健康</b>问题，报复要找 <b>OSHA</b>，时限可能<b>只有约 30 天</b>，特别紧；<b>工资 / 加班</b>类的报复走<b>劳工部 DOL</b>。如果你属于后两类，<b>务必尽快单独确认那条线的时限</b>，别只看下面 EEOC 的窗口。</p>',
     self:'<div class="magic"><b>先自己做：</b>把"受保护行为"和"被穿小鞋"的<b>日期</b>都记下来——两件事隔得越近，因果越强（temporal proximity）。相关邮件/短信/绩效/排班存到私人账户。</div>',
     sol:'走 EEOC：<b>180 天</b>，你所在州有公平就业机构则 <b>300 天</b>，从不利行为那天起算；<b>加州、纽约州是 3 年</b>。要先过 EEOC/州机构、拿到 right-to-sue 才能上法庭。',
     channel:'EEOC 免费自助 → <a href="https://www.eeoc.gov/retaliation" target="_blank" rel="noopener">eeoc.gov/retaliation</a>；州机构；NELA / CELA 律师。',
@@ -593,12 +599,12 @@ const CATS = {
   immig:{ icon:'', title:'被拿身份 / 签证 / I-9 威胁',
     entry:'被拿身份、签证、I-9 威胁',
     entryD:'H1B / 绿卡 / E-Verify / 查身份 → 有专门免费保护你的机构',
-    intro:'很多人不知道：<b>基于身份的就业歧视、拿身份威胁你，是有专门的联邦机构免费管的。</b>有合法工作身份的人（包括 H1B、绿卡）都受保护。',
+    intro:'很多人不知道：<b>基于身份的就业歧视、拿身份威胁你，是有专门的联邦机构免费管的。</b>有合法工作身份的人（包括 H1B、绿卡）在很多情形下都受保护——但具体哪条法律保护你，<b>要看是哪种情况</b>（见下），不是所有签证持有人在每一类里都算"受保护对象"，找人确认更稳。',
     law:'<p>可能违法的情形：因<b>公民身份 / 国籍</b>区别对待；<b>document abuse</b>——办 I-9 时要求超出法律要求、或指定特定证件；用"我让你身份出问题/不给续签"来<b>威胁、报复</b>你（比如你提了工资问题之后）。</p>'
       +'<p>EEOC 已明确：<b>威胁举报你的移民身份，属于"物质性不利对待"</b>（即可构成违法报复）。H1B 也受保护——不能因为你维权或想换工作就拿身份压你。</p>',
     self:'<div class="magic"><b>先自己做：</b>把威胁的<b>原话</b>记下来、留证据；了解你的身份其实是<b>有保护</b>的，对方那套"我让你滚回去"多半是吓唬。</div>'
       +'<div class="callout">身份相关的投诉，IER 这个机构<b>专门保护投诉人</b>，是为了让你敢举报而设的免费渠道。</div>',
-    sol:'IER 有自己的受理时限，<b>越早联系越好</b>；如果同时涉及工资或歧视，也可同时走 DOL / EEOC。',
+    sol:'IER 的投诉时限一般是 <b>180 天</b>（从歧视/报复那天起算），<b>越早联系越好</b>；如果同时涉及工资或歧视，也可同时走 DOL / EEOC（各有各的时限）。',
     channel:'<b>司法部 移民与雇员权利处(DOJ-IER)</b>：<b>免费热线、有语言协助</b> → 1-800-255-7688；网站 <a href="https://www.justice.gov/ier" target="_blank" rel="noopener">justice.gov/ier</a>。涉及工资 → DOL；国籍歧视也可 → EEOC。',
     src:'EEOC（不利对待含"威胁举报移民身份"，已核实）；DOJ-IER justice.gov/ier（热线号码请以官网为准）',
     quiz:{ steps:[
@@ -622,8 +628,8 @@ const CATS = {
     entry:'被开除了 / 收到一份 severance 让我签',
     entryD:'先别急着签！点进来看为什么',
     intro:'美国大多数州是 <b>at-will（任意雇佣）</b>：开除本身通常合法。但如果<b>真实原因</b>是受保护类别、报复、你拒绝做违法的事、或行使了法定权利，那开除就可能非法——关键看"为什么被开"。',
-    law:'<div class="callout red"><b>最重要的一句：被开除，先别急着签 severance！</b><br>severance 协议里<b>通常有 release / waiver 条款</b>——你一签字，就<b>放弃了将来追究公司的权利</b>。一旦签了，前面说的"非法开除"基本就告不了了。</div>'
-      +'<div class="magic"><b>你有权要时间考虑：</b>可以回复 HR 你需要时间 review。<b>如果你 40 岁以上</b>，相关法律(OWBPA)通常给你考虑期 + 一段反悔期。签之前，<b>最好让律师花十几分钟看一眼</b>——很多是免费咨询。</div>',
+    law:'<div class="callout red"><b>最重要的一句：被开除，先别急着签 severance！</b><br>severance 协议里<b>通常有 release / waiver 条款</b>——签了就<b>放弃协议覆盖的那些既有索赔权利</b>（已经发生的私人诉求），所以签之前一定要让人看清你放弃了什么。<br>注意两点：① 你<b>放弃不了</b>"向 EEOC 投诉 / 配合调查"的权利，也放弃不了将来才发生的事；② 但实务上一旦签了拿了钱，很多既有的索赔就很难再追了——<b>所以别在压力下当场签</b>。</div>'
+      +'<div class="magic"><b>你有权要时间考虑：</b>可以回复 HR 你需要时间 review。<b>如果你 40 岁以上</b>，OWBPA（只管"放弃年龄歧视索赔"这部分）通常给你 <b>至少 21 天</b>考虑（群体裁员是 45 天）+ 签字后 <b>7 天</b>反悔期。签之前，<b>最好让律师花十几分钟看一眼</b>——很多是免费咨询。</div>',
     self:'<div class="magic"><b>先自己做：</b>想清楚"被开前发生过什么"——投诉过吗？请过假吗？提过工资问题吗？属于某个受保护类别吗？这些决定了开除合不合法。把相关证据、那份 severance 原件都存好，<b>别在压力下当场签字</b>。</div>',
     sol:'看触发原因：若是歧视/报复，走 EEOC <b>180/300 天</b>或加州、纽约州 <b>3 年</b>；severance 本身一般会给你考虑期。',
     channel:'<b>强烈建议签字前找雇员律师看一眼</b> → NELA <a href="https://www.nela.org" target="_blank" rel="noopener">nela.org</a>、加州 CELA <a href="https://www.cela.org" target="_blank" rel="noopener">cela.org</a>。原因涉及歧视/报复 → EEOC / 州机构。',
@@ -725,12 +731,15 @@ function renderStep(){
     h+='<div id="multibox">'+s.items.map((t,i)=>'<label class="check"><input type="checkbox" value="'+i+'" onchange="multiToggle('+i+','+(s.none!=null?s.none:-1)+')"><span>'+t+'</span></label>').join('')+'</div>'
       +'<button class="btn" id="qnext" disabled onclick="commitMulti(\''+s.id+'\')">下一步 →</button>';
   } else if(s.type==='statesize'){
-    h+='<label class="fld">公司所在的州</label><select id="qstate" onchange="syncSS('+(s.sizeOptional?'true':'false')+')"><option value="">请选择…</option>'
-      +'<option value="CA">加州 California</option><option value="NY">纽约州 New York</option><option value="NJ">新泽西 New Jersey</option><option value="WA">华盛顿州 Washington</option><option value="TX">德州 Texas</option><option value="OTHER">其他 / 不确定</option></select>';
+    const QORDER=['CA','NY','NJ','TX','WA','MA','IL','GA','PA','MD','VA','FL','OTHER'];
+    const QLABEL={CA:'加州 California',NY:'纽约州 New York',NJ:'新泽西 New Jersey',TX:'德州 Texas',WA:'华盛顿州 Washington',MA:'麻州 Massachusetts',IL:'伊利诺伊 Illinois',GA:'佐治亚 Georgia',PA:'宾州 Pennsylvania',MD:'马里兰 Maryland',VA:'弗吉尼亚 Virginia',FL:'佛州 Florida',OTHER:'其他 / 不确定'};
+    if(SELECTED_STATE && !QA.state) QA.state=SELECTED_STATE;   // 沿用首页选的州，列表与首页一致
+    h+='<label class="fld">公司所在的州'+(SELECTED_STATE&&STATE_NAMES[SELECTED_STATE]?'（已沿用你选的'+STATE_NAMES[SELECTED_STATE]+'，可改）':'')+'</label><select id="qstate" onchange="syncSS('+(s.sizeOptional?'true':'false')+')"><option value="">请选择…</option>'
+      +QORDER.map(k=>'<option value="'+k+'"'+(QA.state===k?' selected':'')+'>'+QLABEL[k]+'</option>').join('')+'</select>';
     if(!s.sizeOptional){
       h+='<p class="q" style="font-size:16px;margin-top:14px">公司大概有多少员工？</p>'
         +['1','5','15','50','?'].map(v=>{const lab={'1':'1–4 人','5':'5–14 人','15':'15–49 人','50':'50 人以上','?':'不确定'}[v];
-          return '<button class="opt" data-sz="'+v+'" onclick="pickSize(\''+v+'\')"><span class="t">'+lab+'</span></button>';}).join('');
+          return '<button class="opt" data-sz="'+v+'" onclick="pickSize(event,\''+v+'\')"><span class="t">'+lab+'</span></button>';}).join('');
     }
     h+='<button class="btn" id="qnext" disabled onclick="commitSS()" style="margin-top:6px">下一步 →</button>';
     if(s.sizeOptional) QA.size='?';
@@ -755,8 +764,8 @@ function multiToggle(i,noneIdx){
 }
 function commitMulti(id){ QA[id]=multiSel.slice(); multiSel=[]; quizNext(); }
 function ssReady(sizeOptional){ return !!(QA.state && (sizeOptional || QA.size)); }
-function syncSS(sizeOptional){ QA.state=document.getElementById('qstate').value; document.getElementById('qnext').disabled=!ssReady(sizeOptional); }
-function pickSize(v){ QA.size=v; document.querySelectorAll('[data-sz]').forEach(b=>b.classList.remove('sel')); event.currentTarget.classList.add('sel'); document.getElementById('qnext').disabled=!ssReady(false); }
+function syncSS(sizeOptional){ QA.state=document.getElementById('qstate').value; if(QA.state) setState(QA.state); document.getElementById('qnext').disabled=!ssReady(sizeOptional); }
+function pickSize(ev,v){ QA.size=v; document.querySelectorAll('[data-sz]').forEach(b=>b.classList.remove('sel')); (ev&&ev.currentTarget?ev.currentTarget:document.querySelector('[data-sz="'+v+'"]')).classList.add('sel'); document.getElementById('qnext').disabled=!ssReady(false); }
 function commitSS(){ quizNext(); }
 function commitDate(id){ QA[id]=document.getElementById('qdate').value; quizNext(); }
 
